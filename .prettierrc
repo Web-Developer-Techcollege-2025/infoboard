@@ -1,7 +1,7 @@
 {
   "tabWidth": 2,
   "useTabs": false,
-  "tailwindStylesheet": "./style.css",
+  "tailwindStylesheet": "./src/style.css",
   "tailwindFunctions": ["create"],
   "plugins": ["prettier-plugin-tailwindcss"]
 }
