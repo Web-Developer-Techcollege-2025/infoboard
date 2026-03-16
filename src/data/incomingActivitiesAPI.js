@@ -1,4 +1,4 @@
-const API_URL = "http://iws.itcn.dk/techcollege/schedules";
+const API_URL = "https://iws.itcn.dk/techcollege/schedules?departmentcode=smed";
 
 export async function getSchedules() {
   const response = await fetch(API_URL);
