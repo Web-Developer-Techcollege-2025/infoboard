@@ -2,9 +2,49 @@
 @import "tailwindcss";
 
 @theme {
-
+  /* Color */
+  --color-primary-red: #D14938;
+  --color-accent-yellow: #FFFCC6;
+  --color-secondary-white: #FFFFFF;
+  --color-orange: #E48846;
+  --color-dark-orange: #F4690C;
+  --color-light-orange: #F7C894;
+  --color-yellow: #F5C961;
+  --color-dark-yellow: #F0A901;
+  --color-light-blue: #B5B5FF;
+  --color-dark-blue: #4C4DDB;
+  --color-blue: #5987B8; /* 30% */
+  --color-purple: #9451CE;
+  --color-dark-green: #146D57;
+  --color-light-green: #97BEAC;
+  
+  /* Typography */
+  --font-family: 'Karla', sans-serif;
+  --font-size-h1: 96px;
+  --font-size-large: 48px;
+  --font-size-medium: 45px;
+  --font-size-base: 40px;
+  --font-size-small: 36px;
+  
+  /* Font weights */
+  --font-light: 300;
+  --font-regular: 400;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extra-bold: 900;
+  
+  /* Transparency */
+  --opacity-card: 0.5;
+  --opacity-accent: 0.4;
+  
+  /* Card radii */
+  --radius-card: 12px;
 }
 
+
+
 @layer base {
-    
+    h1 {
+        @apply 
+    }
 }
