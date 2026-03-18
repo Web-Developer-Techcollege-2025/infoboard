@@ -10,7 +10,7 @@ const app = get("#app");
 
 (async () => {
   set(await DRNewsModule(), app);
-  set(await MenuModule(), app);
+  // set(await MenuModule(), app);
   set(await RejseplanenModule(), app);
   set(await ActivitiesModule(), app);
 })();

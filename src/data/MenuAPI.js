@@ -1,20 +1,10 @@
 const kantineURL = "/kantineapi/umbraco/api/content/getcanteenmenu/?type=json";
 
 export async function fetchMenu() {
-  try {
-    const menuResponse = await fetch(kantineURL);
-    if (!menuResponse.ok) {
-      return null;
-    }
-
-    const contentType = menuResponse.headers.get("content-type") || "";
-    if (!contentType.includes("application/json")) {
-      return null;
-    }
-
-    const MenuData = await menuResponse.json();
-    return MenuData;
-  } catch {
-    return null;
-  }
+  const result = await fetch(kantineURL);
+  if (!result.ok)
+    throw new Error(`Fetching failed: ${result.status} ${result.statusText}`);
+  const data = await result.json();
+  console.log(data);
+  return data;
 }
