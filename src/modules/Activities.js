@@ -2,7 +2,7 @@ import { getActivities } from "../data/ActivitiesAPI.js";
 import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
 
-// 🎨 EXACT color rotation like your design
+
 const colorVariants = [
   {
     bg: "bg-[var(--color-orange)]",
@@ -39,9 +39,9 @@ export async function ActivitiesModule() {
     heading.textContent = "SKEMA";
     set(heading, container);
 
-    // TAKE FIRST 6 ACTIVITIES
+
     activities.slice(0, 6).forEach((activity, index) => {
-      // 🎯 ONLY rotation — NOTHING else
+     
       const variant = colorVariants[index % colorVariants.length];
 
       const item = create(
@@ -49,14 +49,14 @@ export async function ActivitiesModule() {
         `flex items-center justify-between ${variant.bg} rounded-full px-4 py-3 mb-4`
       );
 
-      // ROOM (pill)
+    
       const room = create(
         "div",
         `${variant.pill} text-white px-4 py-2 rounded-full text-[16px] font-semibold w-[90px] text-center truncate`
       );
       room.textContent = activity.room;
 
-      // MIDDLE (team + subject)
+     
       const middle = create(
         "div",
         "flex items-center gap-4 flex-1 px-4 text-white"
@@ -76,14 +76,14 @@ export async function ActivitiesModule() {
 
       set([team, subject], middle);
 
-      // TIME
+    
       const time = create(
         "div",
         "text-white text-[14px] font-semibold"
       );
       time.textContent = formatTime(activity.startDate);
 
-      // BUILD
+    
       set([room, middle, time], item);
       set(item, container);
     });
@@ -101,7 +101,7 @@ export async function ActivitiesModule() {
   }
 }
 
-// FORMAT TIME
+
 function formatTime(dateString) {
   const date = new Date(dateString);
   return date.toLocaleTimeString([], {

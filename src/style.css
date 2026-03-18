@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Color */
+  /* === COLORS === */
   --color-primary-red: #d14938;
   --color-accent-yellow: #fffcc6;
   --color-secondary-white: #ffffff;
@@ -18,8 +18,12 @@
   --color-dark-green: #146d57;
   --color-light-green: #97beac;
 
-  /* Typography */
+  /* === TYPOGRAPHY === */
+
+  /* Font families */
   --font-family: "Karla", sans-serif;
+
+  /* Font sizes */
   --font-size-h1: 96px;
   --font-size-large: 48px;
   --font-size-medium: 45px;
@@ -33,31 +37,43 @@
   --font-bold: 700;
   --font-extra-bold: 900;
 
-  /* Transparency */
+  /* === TRANSPARENCY === */
   --opacity-card: 0.5;
   --opacity-accent: 0.4;
 
-  /* Card radii */
-  --radius-card: 12px;
+  /* === LAYOUT === */
+
+  /* Spacing */
+
+  /* Border radii */
+  --border-radius-module: 12px;
 }
 
 @layer base {
   #app {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    place-items: center;
+    @apply grid min-h-screen grid-cols-3 grid-rows-[2fr_1fr] gap-4 p-4;
   }
 
   body {
     font-family: var(--font-family);
   }
+
+  section {
+    @apply flex flex-col;
+  }
+
+  h2 {
+    @apply text-center font-bold text-4xl;
+  }
 }
 
 @layer components {
   /* Put custom component class styles here */
+  section.module {
+    @apply gap-4 rounded-xl p-4;
+    padding: var(--spacing-module);
+    border-radius: var(--border-radius-module);
+  }
 }
 
 @layer utilities {
