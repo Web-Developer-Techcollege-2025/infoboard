@@ -6,7 +6,7 @@ export async function ActivitiesModule() {
   try {
     const activities = await fetchActivities();
 
-    const activitiesContainer = create("section", "activities-container");
+    const activitiesContainer = create("section", "activities-module module");
     const heading = create("h2", "activities-heading");
     heading.textContent = "AKTIVITETER";
     set(heading, activitiesContainer);
