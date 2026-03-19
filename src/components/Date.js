@@ -12,15 +12,22 @@ export function date(date = new Date()) {
     year: "numeric",
   });
 
-  const dateContainer = create('div', 'flex flex-col pl-3')
+  const dateContainer = create(
+    "div",
+    "day-date-container flex h-full w-full flex-col items-center justify-center",
+  );
 
-  const weekdayEl = create('span', 'date-weekday text-h1  text-secondary-white font-semibold')
-  weekdayEl.textContent = weekday + ' ';
+  const weekdayEl = create(
+    "span",
+    "date-weekday text-h1 font-bold text-secondary-white",
+  );
+  weekdayEl.textContent = weekday + " ";
 
-
-
-  const restEl = create('span', 'date-rest text-secondary-white font-regular text-large')
-  restEl.textContent = rest;
+  const restEl = create(
+    "span",
+    "date-rest text-large font-bold text-secondary-white",
+  );
+  restEl.textContent = "d. " + rest;
   set([weekdayEl, restEl], dateContainer);
 
   return dateContainer;

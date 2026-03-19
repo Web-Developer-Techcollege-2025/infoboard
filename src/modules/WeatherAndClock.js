@@ -1,32 +1,50 @@
 import { fetchWeather } from "../data/WeatherAPI";
 
 import { time } from "../components/Time";
-import { date } from "../components/Date"
+import { date } from "../components/Date";
 import { weatherIcon } from "../components/WeatherIcons";
 
 import { create } from "../utils/create";
 import { set } from "../utils/set";
 
 export function WeatherClockModule() {
-  const weatherAndClockContainer = create("section", "module weather-clock-module flex flex-row bg-secondary-white gap-12 rounded-xl");
+  const weatherAndClockContainer = create(
+    "section",
+    "module weather-clock-module flex flex-row items-center gap-12 rounded-xl bg-accent-yellow/40",
+  );
 
-  const clockContainer = create("div", "clock-container bg-purple m-12 rounded-xl text-center content-start");
+  const clockContainer = create(
+    "div",
+    "clock-container flex h-full w-full content-start items-center justify-center rounded-xl bg-purple text-center",
+  );
   set(time(), clockContainer);
 
-  const dateContainer = create("div", "date-container bg-purple rounded-xl w-full p-6");
+  const dateContainer = create(
+    "div",
+    "date-container flex h-full w-full items-center justify-center rounded-xl bg-purple text-center",
+  );
   set(date(), dateContainer);
 
-  const clockAndDateContainer = create("div", "clock-date-container mb-12 ");
+  const clockAndDateContainer = create(
+    "div",
+    "clock-date-container flex h-full w-full flex-col items-center gap-12",
+  );
   set([clockContainer, dateContainer], clockAndDateContainer);
 
-  const weatherContainer = create("div", "weather-container bg-purple px-7 py-3 rounded-xl");
+  const weatherContainer = create(
+    "div",
+    "weather-container h-full w-full rounded-xl bg-purple",
+  );
 
   async function updateWeather() {
     weatherContainer.innerHTML = "";
 
     fetchWeather()
       .then((data) => {
-        const temp = create("p", "weather-temp text-h1 text-secondary-white font-medium");
+        const temp = create(
+          "p",
+          "weather-temp p-6 text-center text-h1 font-medium text-secondary-white",
+        );
         const icon = weatherIcon(data.weather[0].description);
         temp.textContent = `${Math.round(data.main.temp)}°C`;
 

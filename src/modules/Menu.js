@@ -10,13 +10,11 @@ const DAYS = [
 
 export async function MenuModule() {
   const section = document.createElement("section");
-  section.className =
-    "w-[1145px], h-[1192px], top-[296px], left-[1347px], border-radius-[30px], bg-secondary-white/50";
+  section.className = "menu-module module bg-secondary-white/50";
 
   const heading = document.createElement("h2");
-  heading.className =
-    "text-primary-red font-black font-family, font-bold, text-[98px]";
-  heading.textContent = "";
+  heading.className = "text-primary-red font-black";
+  heading.textContent = "UGENS MENU";
   section.appendChild(heading);
 
   const dishElement = {};
@@ -27,18 +25,18 @@ export async function MenuModule() {
     card.dataset.day = key;
 
     const title = document.createElement("h3");
-    title.className = "text-primary-red text-[48px]";
+    title.className = "text-primary-red text-large";
     title.textContent = label;
 
     const row = document.createElement("div");
     row.className = "flex justify-between w-full";
 
     const dish = document.createElement("p");
-    dish.className = "text-primary-red font-black text-[48px] flex-1";
+    dish.className = "text-primary-red font-black text-large flex-1";
     dish.textContent = "–";
 
     const price = document.createElement("p");
-    price.className = "text-[48px] shrink-0 text-primary-red";
+    price.className = "text-large shrink-0 text-primary-red";
 
     dishElement[key] = dish;
     priceElement[key] = price;
