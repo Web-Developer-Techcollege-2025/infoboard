@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Rain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #91fbfc;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 10px;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M64.75,258.39C30.35,233.4,7.99,192.85,7.99,147.07,7.99,71.12,69.56,9.55,145.52,9.55c65.79,0,120.8,46.21,134.33,107.94,7.84-2.38,16.16-3.66,24.78-3.66,47.16,0,85.38,38.23,85.38,85.38,0,36.45-22.83,67.56-54.98,79.81"/>
+  <line class="cls-1" x1="131.17" y1="217.22" x2="131.17" y2="354.09"/>
+  <line class="cls-1" x1="199" y1="251.85" x2="199" y2="388.72"/>
+  <line class="cls-1" x1="268.83" y1="217.22" x2="268.83" y2="354.09"/>
+</svg>

@@ -9,7 +9,7 @@ let currentIndex = 0;
 export async function DRNewsModule() {
   const drNewsModule = create(
     "section",
-    "dr-news-module module col-span-2 col-start-2",
+    "dr-news-module module col-span-2 col-start-2", 
   );
   const heading = create("h2", "heading");
   heading.textContent = "DR - Seneste nyt";
