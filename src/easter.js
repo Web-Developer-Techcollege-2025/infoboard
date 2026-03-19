@@ -1,7 +1,8 @@
 export const easterEgg = () =>{
     const section = document.createElement("section")
 
-    const imgContainer = document.createElement("div")
+    const container = document.createElement("div")
+
 
     const breakfastImg = document.createElement("img")
     breakfastImg.src = "../public/breakfast.jpeg"
@@ -14,6 +15,10 @@ export const easterEgg = () =>{
 
     const p = document.createElement("p")
     p.textContent = "Husk at der er fælles morgenmad på Medieafdelingen mandag d. 30. marts kl. 9:30."
+
+    section.append(container)
+    container.append(breakfastImg, textContainer)
+    textContainer.append(h1, p)
 
     return section;
 }
