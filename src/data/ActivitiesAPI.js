@@ -1,5 +1,5 @@
+import { getFriendlySubject, validEducations } from "./subjectMap.js";
 const API_URL = "https://iws.itcn.dk/techcollege/schedules?departmentcode=smed";
-
 let cachedSchedules = null;
 
 
@@ -17,13 +17,16 @@ export async function fetchActivities() {
 
     const data = await res.json();
 
-    cachedSchedules = data.value.map((item) => ({
-      team: item.Team,
-      startDate: item.StartDate,
-      subject: item.Subject,
-      education: item.Education,
-      room: item.Room,
-    }));
+   cachedSchedules = data.value
+  .filter((item) => validEducations.includes(item.Education))
+
+  .map((item) => ({
+    team: item.Team,
+    startDate: item.StartDate,
+    subject: getFriendlySubject(item.Subject),
+    education: item.Education,
+    room: item.Room,
+  }));
 
     return cachedSchedules;
   } catch (error) {
