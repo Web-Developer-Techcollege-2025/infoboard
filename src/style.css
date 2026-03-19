@@ -29,6 +29,12 @@
   --font-size-medium: 45px;
   --font-size-base: 40px;
   --font-size-small: 36px;
+  
+  --text-h1: 96px;
+  --text-large: 48px;
+  --text-medium: 45px;
+  --text-base: 40px;
+  --text-small: 36px;
 
   /* Font weights */
   --font-light: 300;

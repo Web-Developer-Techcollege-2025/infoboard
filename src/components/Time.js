@@ -7,7 +7,7 @@ export function time(date = new Date()) {
     minute: "2-digit",
   });
 
-  const timeEl = create('p', 'time');
+  const timeEl = create('p', 'time text-secondary-white text-[170px] font-extrabold px-16 py-1.5');
   timeEl.textContent = currentTime;
 
   return timeEl;

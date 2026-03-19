@@ -12,13 +12,14 @@ export function date(date = new Date()) {
     year: "numeric",
   });
 
-  const dateContainer = create('div')
+  const dateContainer = create('div', 'flex flex-col pl-3')
 
-  const weekdayEl = create('span', 'date-weekday ')
+  const weekdayEl = create('span', 'date-weekday text-h1  text-secondary-white font-semibold')
   weekdayEl.textContent = weekday + ' ';
-  
 
-  const restEl = create('span', 'date-rest')
+
+
+  const restEl = create('span', 'date-rest text-secondary-white font-regular text-large')
   restEl.textContent = rest;
   set([weekdayEl, restEl], dateContainer);
 
