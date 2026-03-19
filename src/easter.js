@@ -1,14 +1,14 @@
+import { glitch } from "./Node"
+
 export const easterEgg = () =>{
     const section = document.createElement("section")
 
     const container = document.createElement("div")
-    container.className = "flex w-1/2 h-1/2 bg-[var(--color-light-blue)]/95 rounded-xl"
 
 
     const breakfastImg = document.createElement("img")
     breakfastImg.src = "../public/breakfast.jpeg"
     breakfastImg.alt = "Bread"
-    breakfastImg.className = "w-1/2 h-2/3 rounded-xl"
 
     const textContainer = document.createElement("div")
 
@@ -21,6 +21,8 @@ export const easterEgg = () =>{
     section.append(container)
     container.append(breakfastImg, textContainer)
     textContainer.append(h1, p)
+    const myGlitch = glitch()
+    
 
     return container;
 }

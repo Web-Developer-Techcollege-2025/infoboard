@@ -1,29 +1,21 @@
-const { exec } = require("child_process");
+export const glitch = () => {
+    const container = document.createElement("div")
+    
+    function start() {
+        console.clear();
+    
+        setInterval(function () {
+            let line = "";
+    
+            for (let i = 0; i < 11; i++) {
+                line += Math.floor(Math.random() * 100) + " ";
+            }
+            container.innerText = line;
+            console.log(line);
+        }, 100);
+    }
+    
+    start();
 
-// Path to your .bat file
-const batFilePath = `public/easter.bat`; 
-// ↑ IMPORTANT: keep the quotes if path has spaces
-
-export function runBat() {
-    console.log("Running .bat file at:", new Date().toLocaleString());
-
-    exec(batFilePath, (error, stdout, stderr) => {
-        if (error) {
-            console.error("Error:", error.message);
-            return;
-        }
-
-        if (stderr) {
-            console.error("stderr:", stderr);
-            return;
-        }
-
-        console.log("Output:", stdout);
-    });
+    return container;
 }
-
-// Run immediately (optional)
-runBat();
-
-// Run every 3 hours
-setInterval(runBat, 3 * 60 * 60 * 1000);
