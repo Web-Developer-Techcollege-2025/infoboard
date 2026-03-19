@@ -17,8 +17,8 @@ const colorVariants = [
     pill: "bg-[var(--color-dark-yellow)]",
   },
   {
-    bg: "bg-[var(--color-light-blue)]",
-    pill: "bg-[var(--color-blue)]",
+    bg: "bg-[#4DA6FF]",
+  pill: "bg-[#1E6FD9]",
   },
 ];
 
@@ -26,12 +26,12 @@ export async function ActivitiesModule() {
   try {
     const activities = await getActivities();
 
-    const container = create(
-      "section",
-      "w-[420px] p-6 rounded-[12px] bg-[var(--color-light-blue)]/40"
-    );
+const container = create(
+  "section",
+  "w-[550px] p-6 rounded-[12px] bg-[var(--color-light-blue)]"
+);
 
-    // TITLE
+ 
     const heading = create(
       "h2",
       "text-center text-[var(--color-primary-red)] text-[36px] font-bold mb-6 tracking-widest"
