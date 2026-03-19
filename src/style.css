@@ -2,9 +2,80 @@
 @import "tailwindcss";
 
 @theme {
+  /* === COLORS === */
+  --color-primary-red: #d14938;
+  --color-accent-yellow: #fffcc6;
+  --color-secondary-white: #ffffff;
+  --color-orange: #e48846;
+  --color-dark-orange: #f4690c;
+  --color-light-orange: #f7c894;
+  --color-yellow: #f5c961;
+  --color-dark-yellow: #f0a901;
+  --color-light-blue: #b5b5ff;
+  --color-dark-blue: #4c4ddb;
+  --color-blue: #5987b8; /* 30% */
+  --color-purple: #9451ce;
+  --color-dark-green: #146d57;
+  --color-light-green: #97beac;
 
+  /* === TYPOGRAPHY === */
+
+  /* Font families */
+  --font-family: "Karla", sans-serif;
+
+  /* Font sizes */
+  --font-size-h1: 96px;
+  --font-size-large: 48px;
+  --font-size-medium: 45px;
+  --font-size-base: 40px;
+  --font-size-small: 36px;
+
+  /* Font weights */
+  --font-light: 300;
+  --font-regular: 400;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extra-bold: 900;
+
+  /* === TRANSPARENCY === */
+  --opacity-card: 0.5;
+  --opacity-accent: 0.4;
+
+  /* === LAYOUT === */
+
+  /* Spacing */
+
+  /* Border radii */
+  --border-radius-module: 12px;
 }
 
 @layer base {
-    
+  #app {
+    @apply grid min-h-screen grid-cols-3 grid-rows-[2fr_1fr] gap-4 p-4;
+  }
+
+  body {
+    font-family: var(--font-family);
+  }
+
+  section {
+    @apply flex flex-col;
+  }
+
+  h2 {
+    @apply text-center font-bold text-4xl;
+  }
+}
+
+@layer components {
+  /* Put custom component class styles here */
+  section.module {
+    @apply gap-4 rounded-xl p-4;
+    padding: var(--spacing-module);
+    border-radius: var(--border-radius-module);
+  }
+}
+
+@layer utilities {
+  /* Put custom utility class styles here */
 }
