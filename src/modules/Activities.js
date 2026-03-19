@@ -5,20 +5,20 @@ import { set } from "../utils/set.js";
 
 const colorVariants = [
   {
-    bg: "bg-[var(--color-orange)]",
-    pill: "bg-[var(--color-primary-red)]",
+    bg: "bg-orange",
+    pill: "bg-primary-red",
   },
   {
-    bg: "bg-[var(--color-light-green)]",
-    pill: "bg-[var(--color-dark-green)]",
+    bg: "bg-light-green",
+    pill: "bg-dark-green",
   },
   {
-    bg: "bg-[var(--color-yellow)]",
-    pill: "bg-[var(--color-dark-yellow)]",
+    bg: "bg-yellow",
+    pill: "bg-dark-yellow",
   },
   {
-    bg: "bg-[var(--color-light-blue)]",
-    pill: "bg-[var(--color-blue)]",
+    bg: "bg-[#2563eb]/20",
+    pill: "bg-[#2563eb]",
   },
 ];
 
@@ -26,21 +26,21 @@ export async function ActivitiesModule() {
   try {
     const activities = await getActivities();
 
-    const container = create(
-      "section",
-      "w-[420px] p-6 rounded-[12px] bg-[var(--color-light-blue)]/40"
-    );
+  const container = create(
+  "section",
+  "w-[650px] p-6 rounded-[12px] bg-light-blue text-white"
+);
 
-    // TITLE
+ 
     const heading = create(
       "h2",
-      "text-center text-[var(--color-primary-red)] text-[36px] font-bold mb-6 tracking-widest"
+      "text-center text-primary-red text-[36px] font-bold mb-6 tracking-widest"
     );
     heading.textContent = "SKEMA";
     set(heading, container);
 
 
-    activities.slice(0, 6).forEach((activity, index) => {
+    activities.slice(0, 7).forEach((activity, index) => {
      
       const variant = colorVariants[index % colorVariants.length];
 
@@ -94,7 +94,7 @@ export async function ActivitiesModule() {
 
     const errorDiv = create(
       "div",
-      "text-white bg-[var(--color-primary-red)] p-4 rounded-[12px]"
+      "text-white bg-primary-red p-4 rounded-[12px]"
     );
     errorDiv.textContent = "AKTIVITETER - utilgængelig";
     return errorDiv;
