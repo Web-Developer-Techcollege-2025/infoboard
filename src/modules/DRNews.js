@@ -3,16 +3,17 @@ import { getCachedDRNews } from "../data/timers/DRNewsScheduler.js";
 
 import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
+import NoImageIcon from "../assets/images/infoboardIconNoImage.svg";
 
 let currentIndex = 0;
 
 export async function DRNewsModule() {
   const drNewsModule = create(
     "section",
-    "dr-news-module module col-span-2 col-start-2", 
+    "dr-news-module module col-span-2 col-start-2 bg-blue/40",
   );
-  const heading = create("h2", "heading");
-  heading.textContent = "DR - Seneste nyt";
+  const heading = create("h2", "font-black text-secondary-white");
+  heading.textContent = "DR - SENESTE NYT";
   set(heading, drNewsModule);
 
   try {
@@ -22,7 +23,7 @@ export async function DRNewsModule() {
 
     const newsWrapper = create(
       "div",
-      "news-wrapper flex h-full flex-row justify-center gap-4 rounded-xl bg-light-blue p-4 text-white",
+      "news-wrapper flex h-full flex-row justify-center gap-10 rounded-xl text-5xl font-medium text-white",
     );
     set(newsWrapper, drNewsModule);
 
@@ -49,7 +50,7 @@ export async function DRNewsModule() {
 
         const newsItemContainer = create(
           "div",
-          "news-item flex w-full flex-col rounded-lg border border-blue bg-blue/50",
+          "news-item flex w-full flex-col rounded-xl bg-blue/50",
         );
 
         // Set background image if available, fallback to bg-blue/50
@@ -57,11 +58,25 @@ export async function DRNewsModule() {
           newsItemContainer.style.backgroundImage = `url(${item.enclosure.link})`;
           newsItemContainer.style.backgroundSize = "cover";
           newsItemContainer.style.backgroundPosition = "center";
+        } else {
+          // Show no-image icon when no image is available
+          const noImageContainer = create(
+            "div",
+            "no-image-placeholder absolute inset-0 flex items-center justify-center rounded-xl opacity-40",
+          );
+          const noImageImg = create("img", "no-image-icon");
+          noImageImg.src = NoImageIcon;
+          noImageImg.style.width = "50%";
+          noImageImg.style.height = "50%";
+          noImageImg.style.color = "white";
+          set(noImageImg, noImageContainer);
+          newsItemContainer.style.position = "relative";
+          set(noImageContainer, newsItemContainer);
         }
 
         const overlay = create(
           "div",
-          "overlay flex h-full w-full flex-col justify-end gap-2 rounded-lg bg-linear-to-t from-black/70 to-transparent p-4",
+          "overlay flex h-full w-full flex-col justify-between rounded-lg bg-linear-to-t from-black/70 to-transparent p-10 tracking-wide",
         );
 
         const timeCategoryWrapper = create(
@@ -75,7 +90,10 @@ export async function DRNewsModule() {
         const pubDateLabel = create("span", "pub-date");
         pubDateLabel.textContent = `${pubDate} ${pubTime}`;
 
-        const paragraph = create("p", "news-paragraph");
+        const paragraph = create(
+          "p",
+          "news-paragraph leading-tight wrap-break-word",
+        );
         paragraph.textContent = item.title;
 
         set([timeSinceLabel, pubDateLabel], timeCategoryWrapper);

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="no-image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+    <defs>
+        <style>
+            .cls-1 {
+                fill: none;
+                stroke: #e74c3c;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-width: 12px;
+            }
+
+            .cls-2 {
+                fill: none;
+                stroke: #e74c3c;
+                stroke-linecap: round;
+                stroke-width: 14px;
+            }
+        </style>
+    </defs>
+
+    <!-- Picture frame -->
+    <rect class="cls-1" x="60" y="60" width="280" height="280" rx="15" />
+
+    <!-- Large prohibition circle with slash -->
+    <circle class="cls-2" cx="200" cy="200" r="100" />
+    <line class="cls-2" x1="130" y1="130" x2="270" y2="270" />
+</svg>
