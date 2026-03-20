@@ -1,15 +1,18 @@
 export function BackgroundGradient() {
   const style = document.createElement("style");
   style.textContent = `
-    @keyframes gradientShift {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    @keyframes gradientRotate {
+      0%   { --angle: 0deg; }
+      100% { --angle: 360deg; }
+    }
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
     }
     #app {
-      background: linear-gradient(to right, #d946ef, #06b6d4, #d946ef);
-      background-size: 400% 400%;
-      animation: gradientShift 25s ease infinite;
+      background: conic-gradient(from var(--angle) at 2120px 2170px, #d946ef, #facc15, #06b6d4, #d946ef);
+      animation: gradientRotate 25s linear infinite;
     }
   `;
   document.head.appendChild(style);

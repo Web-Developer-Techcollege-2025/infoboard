@@ -55,14 +55,9 @@ export async function MenuModule() {
       const isPast = dayCount < today;
       const isToday = key === todayKey;
       card.classList.toggle("opacity-40", isPast);
-      card.style.backgroundImage = isPast
-        ? "repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(0,0,0,0.06) 10px, rgba(0,0,0,0.06) 20px)"
-        : "";
-      card.classList.toggle("bg-accent-yellow/45", isToday);
+      card.classList.toggle("bg-accent-yellow/65", isToday);
       card.classList.toggle("scale-105", isToday);
-      card.classList.toggle("rounded-bl-[50px]", isToday);
-      card.classList.toggle("rounded-r-4xl", isToday);
-      card.classList.toggle("rounded-tl-xl", isToday);
+      card.classList.toggle("rounded-[30px]", isToday);
     });
   }
 
@@ -72,7 +67,7 @@ export async function MenuModule() {
 
     try {
       const data = await fetchMenu();
-      heading.textContent = `Kantinen – Uge ${data.Week}`;
+      heading.textContent = `KANTINEN – UGE ${data.Week}`;
       if (!data.Days || !Array.isArray(data.Days)) return;
       data.Days.forEach(({ DayName, Dish }) => {
         const key = DayName.toLowerCase();
