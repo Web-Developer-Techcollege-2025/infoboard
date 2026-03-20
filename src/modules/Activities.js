@@ -19,7 +19,7 @@ export async function ActivitiesModule() {
       `
       module activities-module
       w-full max-w-[2600px] mx-auto
-      px-16 py-20
+      
       bg-secondary-white/50 text-white
       flex flex-col justify-start
       `
