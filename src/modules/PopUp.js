@@ -2,8 +2,9 @@ import { create } from "../utils/create.js";
 import { PopUpContent } from "./PopUpContent.js";
 
 export function popup() {
-      const modal = create("div");
-      modal.className = "hidden fixed inset-0 flex items-center justify-center";
+  const modal = create("div");
+  modal.className =
+    "hidden fixed inset-0 flex items-center justify-center pop-up";
 
       setInterval(() => {
           modal.classList.remove("hidden");
@@ -14,5 +15,5 @@ export function popup() {
 
       modal.append(PopUpContent());
 
-      return modal;
-  }
+  return modal;
+}

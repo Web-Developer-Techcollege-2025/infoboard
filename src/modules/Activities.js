@@ -2,7 +2,6 @@ import { getActivities } from "../data/ActivitiesAPI.js";
 import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
 
-
 const colorVariants = [
   {
     bg: "bg-orange",
@@ -26,64 +25,48 @@ export async function ActivitiesModule() {
   try {
     const activities = await getActivities();
 
-  const container = create(
-  "section",
-  "w-[650px] p-6 rounded-[12px] bg-light-blue text-white"
-);
+    const container = create(
+      "section",
+      "module activities-module bg-secondary-white/50 text-white",
+    );
 
- 
     const heading = create(
       "h2",
-      "text-center text-primary-red text-[36px] font-bold mb-6 tracking-widest"
+      "text-center font-black tracking-widest text-primary-red",
     );
     heading.textContent = "SKEMA";
     set(heading, container);
 
-
     activities.slice(0, 7).forEach((activity, index) => {
-     
       const variant = colorVariants[index % colorVariants.length];
 
       const item = create(
         "div",
-        `flex items-center justify-between ${variant.bg} rounded-full px-4 py-3 mb-4`
+        `flex items-center justify-between ${variant.bg} mb-4 rounded-full px-4 py-3`,
       );
 
-    
       const room = create(
         "div",
-        `${variant.pill} text-white px-4 py-2 rounded-full text-[16px] font-semibold w-[90px] text-center truncate`
+        `${variant.pill} w-[90px] truncate rounded-full px-4 py-2 text-center text-[16px] font-semibold text-white`,
       );
       room.textContent = activity.room;
 
-     
       const middle = create(
         "div",
-        "flex items-center gap-4 flex-1 px-4 text-white"
+        "flex flex-1 items-center gap-4 px-4 text-white",
       );
 
-      const team = create(
-        "div",
-        "text-[16px] font-semibold tracking-wide"
-      );
+      const team = create("div", "text-[16px] font-semibold tracking-wide");
       team.textContent = activity.team;
 
-      const subject = create(
-        "div",
-        "text-[14px] font-light opacity-90"
-      );
+      const subject = create("div", "text-[14px] font-light opacity-90");
       subject.textContent = activity.subject;
 
       set([team, subject], middle);
 
-    
-      const time = create(
-        "div",
-        "text-white text-[14px] font-semibold"
-      );
+      const time = create("div", "text-[14px] font-semibold text-white");
       time.textContent = formatTime(activity.startDate);
 
-    
       set([room, middle, time], item);
       set(item, container);
     });
@@ -94,13 +77,12 @@ export async function ActivitiesModule() {
 
     const errorDiv = create(
       "div",
-      "text-white bg-primary-red p-4 rounded-[12px]"
+      "rounded-[12px] bg-primary-red p-4 text-white",
     );
     errorDiv.textContent = "AKTIVITETER - utilgængelig";
     return errorDiv;
   }
 }
-
 
 function formatTime(dateString) {
   const date = new Date(dateString);

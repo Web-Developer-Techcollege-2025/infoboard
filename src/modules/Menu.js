@@ -10,34 +10,33 @@ const DAYS = [
 
 export async function MenuModule() {
   const section = document.createElement("section");
-  section.className =
-    "w-[939px], h-[1192px], top-[296px], left-[1347px], border-radius-[30px]";
+  section.className = "menu-module module bg-secondary-white/50";
 
   const heading = document.createElement("h2");
-  heading.className = "font-family, font-bold, text-[98px]";
-  heading.textContent = "Kantinen";
+  heading.className = "text-primary-red font-black";
+  heading.textContent = "UGENS MENU";
   section.appendChild(heading);
 
   const dishElement = {};
   const priceElement = {};
   DAYS.forEach(({ key, label }) => {
     const card = document.createElement("div");
-    card.className = "p-4";
+    card.className = "p-10 w-[1102.5]";
     card.dataset.day = key;
 
     const title = document.createElement("h3");
-    title.className = "font-black";
+    title.className = "text-primary-red text-large";
     title.textContent = label;
 
     const row = document.createElement("div");
-    row.className = "flex justify-between";
+    row.className = "flex justify-between w-full";
 
     const dish = document.createElement("p");
-    dish.className = "";
+    dish.className = "text-primary-red font-black text-large flex-1";
     dish.textContent = "–";
 
     const price = document.createElement("p");
-    price.className = "";
+    price.className = "text-large shrink-0 text-primary-red";
 
     dishElement[key] = dish;
     priceElement[key] = price;
@@ -56,9 +55,14 @@ export async function MenuModule() {
       const isPast = dayCount < today;
       const isToday = key === todayKey;
       card.classList.toggle("opacity-40", isPast);
-      card.classList.toggle("ring-2", isToday);
-      card.classList.toggle("ring-pink-400", isToday);
-      card.classList.toggle("rounded-xl", isToday);
+      card.style.backgroundImage = isPast
+        ? "repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(0,0,0,0.06) 10px, rgba(0,0,0,0.06) 20px)"
+        : "";
+      card.classList.toggle("bg-accent-yellow/45", isToday);
+      card.classList.toggle("scale-105", isToday);
+      card.classList.toggle("rounded-bl-[50px]", isToday);
+      card.classList.toggle("rounded-r-4xl", isToday);
+      card.classList.toggle("rounded-tl-xl", isToday);
     });
   }
 
