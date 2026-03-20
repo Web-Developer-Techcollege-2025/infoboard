@@ -1,4 +1,4 @@
-import { fetchRejseplanen } from "../data/RejseplanenAPI.js";
+import { fetchRejseplanen } from "../data/rejseplanenAPI.js";
 import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
 
