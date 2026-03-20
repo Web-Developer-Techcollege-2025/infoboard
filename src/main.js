@@ -8,10 +8,12 @@ import { MenuModule } from "./modules/Menu.js";
 import { RejseplanenModule } from "./modules/Rejseplanen.js";
 import { WeatherClockModule } from "./modules/WeatherAndClock.js";
 import { DRNewsModule } from "./modules/DRNews.js";
+import { superTim } from "./supertim.js";
 
 BackgroundGradient();
 
 const app = get("#app");
+set(superTim(), app)
 
 const logo = create("img");
 logo.src = "../public/logo.svg";

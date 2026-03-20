@@ -46,6 +46,9 @@
   /* === TRANSPARENCY === */
   --opacity-card: 0.5;
   --opacity-accent: 0.4;
+
+  /* === Slide-In === */
+  --animate-slide-in: slide-in 10s ease-out forwards;
 }
 
 @layer base {
@@ -79,4 +82,16 @@
 
 @layer utilities {
   /* Put custom utility class styles here */
+  .animate-slide-in {
+    animation: slide-in 5s ease-in-out forwards;
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translate(-150%, 200%);
+  }
+  100% {
+    transform: translate(150%, -100%);
+  }
 }
