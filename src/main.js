@@ -27,3 +27,4 @@ set(grid, app);
   set(await WeatherClockModule(), grid);
   set(await DRNewsModule(), grid);
 })();
+ 

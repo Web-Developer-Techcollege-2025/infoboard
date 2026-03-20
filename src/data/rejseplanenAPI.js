@@ -9,6 +9,8 @@ export async function fetchRejseplanen() {
         `Fetching failed: ${rejseplanenResponse.status} ${rejseplanenResponse.statusText}`,
       );
 
+      console.log(rejseplanenResponse)
+
     const contentType = rejseplanenResponse.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
       throw new Error(
