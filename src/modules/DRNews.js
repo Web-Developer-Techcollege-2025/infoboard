@@ -3,7 +3,6 @@ import { getCachedDRNews } from "../data/timers/DRNewsScheduler.js";
 
 import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
-import NoImageIcon from "../assets/images/infoboardIconNoImage.svg";
 
 let currentIndex = 0;
 
@@ -53,25 +52,11 @@ export async function DRNewsModule() {
           "news-item flex w-full flex-col rounded-xl bg-blue/50",
         );
 
-        // Set background image if available, fallback to bg-blue/50
+        // Set background image if available
         if (item.enclosure?.link) {
           newsItemContainer.style.backgroundImage = `url(${item.enclosure.link})`;
           newsItemContainer.style.backgroundSize = "cover";
           newsItemContainer.style.backgroundPosition = "center";
-        } else {
-          // Show no-image icon when no image is available
-          const noImageContainer = create(
-            "div",
-            "no-image-placeholder absolute inset-0 flex items-center justify-center rounded-xl opacity-40",
-          );
-          const noImageImg = create("img", "no-image-icon");
-          noImageImg.src = NoImageIcon;
-          noImageImg.style.width = "50%";
-          noImageImg.style.height = "50%";
-          noImageImg.style.color = "white";
-          set(noImageImg, noImageContainer);
-          newsItemContainer.style.position = "relative";
-          set(noImageContainer, newsItemContainer);
         }
 
         const overlay = create(

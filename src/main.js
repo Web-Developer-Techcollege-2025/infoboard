@@ -13,9 +13,9 @@ BackgroundGradient();
 
 const app = get("#app");
 
-const h1 = create("h1");
-h1.textContent = "Techcollege";
-set(h1, app);
+const logo = create("img");
+logo.src = "../public/logo.svg";
+set(logo, app);
 
 const grid = create("div", "app-grid");
 set(grid, app);
