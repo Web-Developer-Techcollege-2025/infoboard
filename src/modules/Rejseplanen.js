@@ -58,7 +58,6 @@ async function getRejseplanenData() {
   if (cached) {
     const parsed = JSON.parse(cached);
     const isExpired = Date.now() - parsed.timestamp > CACHE_TIME;
-    console.log(isExpired);
 
     if (!isExpired) {
       return parsed.data;
@@ -176,6 +175,8 @@ function getRemainingTimeLabel(dateString, timeString) {
 
 // ---------- Live update ----------
 function startCountdown(dateString, timeString, element, leftElement) {
+  let interval; // ✅ declared first
+
   function updateCountdown() {
     const label = getRemainingTimeLabel(dateString, timeString);
     if (label === null) {
@@ -188,5 +189,5 @@ function startCountdown(dateString, timeString, element, leftElement) {
   }
 
   updateCountdown();
-  const interval = setInterval(updateCountdown, 1000);
+  interval = setInterval(updateCountdown, 1000); // ✅ assigned after
 }

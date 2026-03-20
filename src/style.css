@@ -55,11 +55,11 @@
   html,
   body,
   #app {
-    @apply h-auto w-[3840];
+    @apply h-[1080px] w-[1920px] overflow-hidden;
   }
 
   #app {
-    @apply flex min-h-screen flex-col items-center p-8;
+    @apply flex flex-col items-center p-8;
   }
 
   .app-grid {
