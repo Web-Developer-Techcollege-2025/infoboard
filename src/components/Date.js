@@ -14,20 +14,20 @@ export function date(date = new Date()) {
 
   const dateContainer = create(
     "div",
-    "day-date-container flex h-full w-full flex-col items-center justify-center",
+    "day-date-container flex py-1 w-full flex-col items-center justify-center",
   );
 
   const weekdayEl = create(
     "span",
-    "date-weekday text-h1 font-bold text-secondary-white",
+    "date-weekday text-h1 font-bold uppercase tracking-wide text-secondary-white",
   );
   weekdayEl.textContent = weekday + " ";
 
   const restEl = create(
     "span",
-    "date-rest text-large font-bold text-secondary-white",
+    "date-rest text-large text-left uppercase tracking-wide text-secondary-white font-normal",
   );
-  restEl.textContent = "d. " + rest;
+  restEl.textContent = "" + rest;
   set([weekdayEl, restEl], dateContainer);
 
   return dateContainer;
