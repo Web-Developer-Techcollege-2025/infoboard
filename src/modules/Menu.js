@@ -1,19 +1,20 @@
 import { fetchMenu } from "../data/MenuAPI.js";
 
 const DAYS = [
-  { key: "mandag", label: "Mandag", dayCount: 1 },
-  { key: "tirsdag", label: "Tirsdag", dayCount: 2 },
-  { key: "onsdag", label: "Onsdag", dayCount: 3 },
-  { key: "torsdag", label: "Torsdag", dayCount: 4 },
-  { key: "fredag", label: "Fredag", dayCount: 5 },
+  { key: "mandag", label: "MANDAG", dayCount: 1 },
+  { key: "tirsdag", label: "TIRSDAG", dayCount: 2 },
+  { key: "onsdag", label: "ONSDAG", dayCount: 3 },
+  { key: "torsdag", label: "TORSDAG", dayCount: 4 },
+  { key: "fredag", label: "FREDAG", dayCount: 5 },
 ];
 
 export async function MenuModule() {
   const section = document.createElement("section");
-  section.className = "menu-module module bg-secondary-white/50";
+  section.className = "menu-module module bg-secondary-white/50 gap-20";
 
   const heading = document.createElement("h2");
-  heading.className = "text-primary-red font-black";
+  heading.className =
+    "text-center font-black tracking-[0.25em] text-primary-red text-[72px] m-0 mb-16 pt-12";
   heading.textContent = "UGENS MENU";
   section.appendChild(heading);
 
@@ -25,11 +26,11 @@ export async function MenuModule() {
     card.dataset.day = key;
 
     const title = document.createElement("h3");
-    title.className = "text-primary-red text-large";
+    title.className = "text-primary-red text-large tracking-[0.35rem]";
     title.textContent = label;
 
     const row = document.createElement("div");
-    row.className = "flex justify-between w-full";
+    row.className = "flex justify-between w-full gap-2";
 
     const dish = document.createElement("p");
     dish.className = "text-primary-red font-black text-large flex-1";
