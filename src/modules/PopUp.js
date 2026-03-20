@@ -1,5 +1,5 @@
 import { create } from "../utils/create.js";
-import { easterEgg } from "../easter.js";
+import { PopUpContent } from "./PopUpContent.js";
 
 export function popup() {
       const modal = create("div");
@@ -9,10 +9,10 @@ export function popup() {
           modal.classList.remove("hidden");
           setTimeout(() => {
               modal.classList.add("hidden");
-          }, 5_000);
-      }, 6_000);
+          }, 30_000);
+      }, 600_000);
 
-      modal.append(easterEgg());
+      modal.append(PopUpContent());
 
       return modal;
   }
