@@ -8,6 +8,7 @@ import { MenuModule } from "./modules/Menu.js";
 import { RejseplanenModule } from "./modules/Rejseplanen.js";
 import { WeatherClockModule } from "./modules/WeatherAndClock.js";
 import { DRNewsModule } from "./modules/DRNews.js";
+import { popup } from "./modules/PopUp.js";
 
 BackgroundGradient();
 
@@ -26,4 +27,5 @@ set(grid, app);
   set(await RejseplanenModule(), grid);
   set(await WeatherClockModule(), grid);
   set(await DRNewsModule(), grid);
+  set(popup(), app)
 })();
