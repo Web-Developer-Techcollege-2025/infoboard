@@ -27,12 +27,7 @@ export async function ActivitiesModule() {
 
     const heading = create(
       "h2",
-      `
-      text-center font-black tracking-[0.25em]
-      text-primary-red
-      text-[72px]
-      m-0 mb-16
-      `
+      `m-0 mb-16 pt-12 text-center text-[72px] font-black tracking-[0.25em] text-primary-red`,
     );
     heading.textContent = "SKEMA";
     set(heading, container);
