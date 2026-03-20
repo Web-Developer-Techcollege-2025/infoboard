@@ -1,3 +1,4 @@
+import QRCode from "qrcode";
 // Displays DR News items in batches of 3, cycling through all available items every 10 seconds
 import { getCachedDRNews } from "../data/timers/DRNewsScheduler.js";
 
@@ -26,7 +27,7 @@ export async function DRNewsModule() {
     );
     set(newsWrapper, drNewsModule);
 
-    function renderBatch() {
+    async function renderBatch() {
       // Clear previous batch before rendering the next
       newsWrapper.querySelectorAll(".news-item").forEach((el) => el.remove());
 
@@ -61,7 +62,19 @@ export async function DRNewsModule() {
 
         const overlay = create(
           "div",
-          "overlay flex h-full w-full flex-col justify-between rounded-lg bg-linear-to-t from-black/70 to-transparent p-10 tracking-wide",
+          "overlay relative flex h-full w-full flex-col gap-10 rounded-lg bg-linear-to-t from-black/70 to-transparent p-10 tracking-wide",
+        );
+
+        const qrCanvas = create("canvas", "qr-code z-10");
+        await QRCode.toCanvas(qrCanvas, item.link, {
+          width: 172,
+          color: { light: "#00000000" }, // transparent baggrund
+        });
+        set(qrCanvas, overlay); // eller direkte i newsItemContainer
+
+        const qrWrapper = create(
+          "div",
+          "absolute right-5 bottom-5 flex h-42 w-42 items-center justify-center self-end rounded-xl bg-white p-1",
         );
 
         const timeCategoryWrapper = create(
@@ -80,9 +93,9 @@ export async function DRNewsModule() {
           "news-paragraph leading-tight wrap-break-word",
         );
         paragraph.textContent = item.title;
-
+        set(qrCanvas, qrWrapper);
         set([timeSinceLabel, pubDateLabel], timeCategoryWrapper);
-        set([timeCategoryWrapper, paragraph], overlay);
+        set([timeCategoryWrapper, paragraph, qrWrapper], overlay);
         set(overlay, newsItemContainer);
         set(newsItemContainer, newsWrapper);
       }
@@ -91,7 +104,7 @@ export async function DRNewsModule() {
       currentIndex = (currentIndex + 3) % usableItems.length;
     }
 
-    renderBatch();
+    await renderBatch();
     setInterval(renderBatch, 10000); // Change news batch every 10 seconds
   } catch {
     heading.textContent = "DR Nyheder - utilgængelig";
