@@ -1,5 +1,5 @@
 {
-"name": "dashboard",
+  "name": "dashboard",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,10 +9,13 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^8.0.0",
-    "tailwindcss": "^4.2.1",
+    "@tailwindcss/vite": "^4.2.1",
     "prettier": "^3.8.1",
-    "prettier-plugin-tailwindcss": "^0.7.2"
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "tailwindcss": "^4.2.1",
+    "vite": "^7.0.0"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
   }
-  
 }

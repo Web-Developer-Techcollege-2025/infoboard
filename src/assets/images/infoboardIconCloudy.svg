@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="cloudy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #91fbfc;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 10px;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M391.01,252.14c0,45.81-36.07,83.19-81.36,85.28-1.33.07-168.54.02-171.21-.14-72.2-4.18-129.45-64.04-129.45-137.28S70.56,62.48,146.52,62.48c65.79,0,120.8,46.21,134.33,107.94,7.84-2.38,16.16-3.66,24.78-3.66,47.16,0,85.38,38.23,85.38,85.38Z"/>
+</svg>

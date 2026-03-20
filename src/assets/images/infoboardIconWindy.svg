@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="windy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 10px;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M101.31,64c6.25-30.53,33.26-53.5,65.64-53.5,37,0,67,30,67,67s-30,67-67,67H22.73"/>
+  <path class="cls-1" d="M177.31,336.74c6.25,30.53,33.26,53.5,65.64,53.5,37,0,67-30,67-67s-30-67-67-67H22.73"/>
+  <path class="cls-1" d="M253.55,138.73c6.25-30.53,33.26-53.5,65.64-53.5,37,0,67,30,67,67s-30,67-67,67H22.73"/>
+</svg>

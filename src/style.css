@@ -2,9 +2,96 @@
 @import "tailwindcss";
 
 @theme {
+  /* === COLORS === */
+  --color-primary-red: #d14938;
+  --color-accent-yellow: #fffcc6;
+  --color-secondary-white: #ffffff;
+  --color-orange: #e48846;
+  --color-dark-orange: #f4690c;
+  --color-light-orange: #f7c894;
+  --color-yellow: #f5c961;
+  --color-dark-yellow: #f0a901;
+  --color-light-blue: #b5b5ff;
+  --color-dark-blue: #4c4ddb;
+  --color-blue: #5987b8;
+  --color-purple: #9451ce;
+  --color-dark-green: #146d57;
+  --color-light-green: #97beac;
 
+  /* === TYPOGRAPHY === */
+
+  /* Font families */
+  --font-family: "Karla", sans-serif;
+
+  /* Font sizes */
+  --font-size-h1: 96px;
+  --font-size-large: 48px;
+  --font-size-medium: 45px;
+  --font-size-base: 40px;
+  --font-size-small: 36px;
+
+  --text-h1: 96px;
+  --text-large: 48px;
+  --text-medium: 45px;
+  --text-base: 40px;
+  --text-small: 36px;
+
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 900;
+
+  /* === TRANSPARENCY === */
+  --opacity-card: 0.5;
+  --opacity-accent: 0.4;
+
+  /* === Slide-In === */
+  --animate-slide-in: slide-in 10s ease-out forwards;
 }
 
 @layer base {
-    
+  #app {
+    @apply flex min-h-screen flex-col items-center p-8;
+  }
+
+  .app-grid {
+    @apply grid w-full grid-cols-3 grid-rows-[3fr_1fr] gap-16 p-8;
+  }
+
+  body {
+    font-family: var(--font-family);
+  }
+
+  h1 {
+    @apply text-center text-9xl font-black font-bold text-accent-yellow text-shadow-[#e6e3a0]/80 text-shadow-[0.4rem_0.4rem_0.5rem_rgba(0,0,0,0.5)];
+  }
+
+  h2 {
+    @apply mb-10 text-center text-7xl font-bold;
+  }
+}
+
+@layer components {
+  /* Put custom component class styles here */
+  section.module {
+    @apply flex flex-col rounded-xl p-10;
+  }
+}
+
+@layer utilities {
+  /* Put custom utility class styles here */
+  .animate-slide-in {
+    animation: slide-in 5s ease-in-out forwards;
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translate(-150%, 200%);
+  }
+  100% {
+    transform: translate(150%, -100%);
+  }
 }
