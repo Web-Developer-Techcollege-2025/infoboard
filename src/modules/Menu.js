@@ -1,11 +1,11 @@
 import { fetchMenu } from "../data/MenuAPI.js";
 
 const DAYS = [
-  { key: "mandag", label: "Mandag", dayCount: 1 },
-  { key: "tirsdag", label: "Tirsdag", dayCount: 2 },
-  { key: "onsdag", label: "Onsdag", dayCount: 3 },
-  { key: "torsdag", label: "Torsdag", dayCount: 4 },
-  { key: "fredag", label: "Fredag", dayCount: 5 },
+  { key: "mandag", label: "MANDAG", dayCount: 1 },
+  { key: "tirsdag", label: "TIRSDAG", dayCount: 2 },
+  { key: "onsdag", label: "ONSDAG", dayCount: 3 },
+  { key: "torsdag", label: "TORSDAG", dayCount: 4 },
+  { key: "fredag", label: "FREDAG", dayCount: 5 },
 ];
 
 export async function MenuModule() {
@@ -13,7 +13,6 @@ export async function MenuModule() {
   section.className = "menu-module module bg-secondary-white/50";
 
   const heading = document.createElement("h2");
-  heading.className = "text-primary-red font-black";
   heading.textContent = "UGENS MENU";
   section.appendChild(heading);
 
@@ -21,22 +20,22 @@ export async function MenuModule() {
   const priceElement = {};
   DAYS.forEach(({ key, label }) => {
     const card = document.createElement("div");
-    card.className = "p-10 w-[1102.5]";
+    card.className = "p-5 w-full";
     card.dataset.day = key;
 
     const title = document.createElement("h3");
-    title.className = "text-primary-red text-large";
+    title.className = "text-primary-red text-xl tracking-widest";
     title.textContent = label;
 
     const row = document.createElement("div");
-    row.className = "flex justify-between w-full";
+    row.className = "flex justify-between w-full gap-2";
 
     const dish = document.createElement("p");
-    dish.className = "text-primary-red font-black text-large flex-1";
+    dish.className = "text-primary-red text-xl flex-1 font-bold";
     dish.textContent = "–";
 
     const price = document.createElement("p");
-    price.className = "text-large shrink-0 text-primary-red";
+    price.className = "text-xl shrink-0 text-primary-red font-bold";
 
     dishElement[key] = dish;
     priceElement[key] = price;
@@ -67,7 +66,7 @@ export async function MenuModule() {
 
     try {
       const data = await fetchMenu();
-      heading.textContent = `KANTINEN – UGE ${data.Week}`;
+      heading.textContent = `MENU - UGE ${data.Week}`;
       if (!data.Days || !Array.isArray(data.Days)) return;
       data.Days.forEach(({ DayName, Dish }) => {
         const key = DayName.toLowerCase();

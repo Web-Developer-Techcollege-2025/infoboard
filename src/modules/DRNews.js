@@ -12,7 +12,7 @@ export async function DRNewsModule() {
     "section",
     "dr-news-module module col-span-2 col-start-2 bg-blue/40",
   );
-  const heading = create("h2", "font-black text-secondary-white");
+  const heading = create("h2");
   heading.textContent = "DR - SENESTE NYT";
   set(heading, drNewsModule);
 

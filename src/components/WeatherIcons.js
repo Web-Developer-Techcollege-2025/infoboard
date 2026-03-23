@@ -27,7 +27,7 @@ const iconMap = {
 };
 
 export function weatherIcon(description) {
-  const container = create("div", "weather-icon px-20 pt-20 pb-10");
+  const container = create("div", "weather-icon px-10 pt-5 pb-5");
   const icon = iconMap[description];
 
   if (!icon) return container;

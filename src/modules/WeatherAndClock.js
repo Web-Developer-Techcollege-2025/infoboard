@@ -10,7 +10,7 @@ import { set } from "../utils/set";
 export function WeatherClockModule() {
   const weatherAndClockContainer = create(
     "section",
-    "module weather-clock-module flex flex-row items-center gap-12 rounded-xl bg-accent-yellow/40",
+    "module weather-clock-module flex flex-row items-center gap-5 rounded-xl bg-accent-yellow/40",
   );
 
   const clockContainer = create(
@@ -27,13 +27,13 @@ export function WeatherClockModule() {
 
   const clockAndDateContainer = create(
     "div",
-    "clock-date-container flex h-full w-full flex-col items-center gap-12",
+    "clock-date-container flex h-1/4 w-full flex-col items-center gap-5",
   );
   set([clockContainer, dateContainer], clockAndDateContainer);
 
   const weatherContainer = create(
     "div",
-    "weather-container h-full w-full rounded-xl bg-purple",
+    "weather-container h-1/4 w-full rounded-xl bg-purple",
   );
 
   async function updateWeather() {
@@ -43,7 +43,7 @@ export function WeatherClockModule() {
       .then((data) => {
         const temp = create(
           "p",
-          "weather-temp p-6 text-center text-h1 font-bold tracking-wider text-secondary-white",
+          "weather-temp p-3 text-center text-6xl font-bold tracking-wider text-secondary-white",
         );
         const icon = weatherIcon(data.weather[0].description);
         temp.textContent = `${Math.round(data.main.temp)}°C`;

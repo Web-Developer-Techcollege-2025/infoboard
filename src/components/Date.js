@@ -19,13 +19,13 @@ export function date(date = new Date()) {
 
   const weekdayEl = create(
     "span",
-    "date-weekday text-h1 font-bold uppercase tracking-wide text-secondary-white",
+    "date-weekday text-3xl font-bold uppercase tracking-wide text-secondary-white",
   );
   weekdayEl.textContent = weekday + " ";
 
   const restEl = create(
     "span",
-    "date-rest text-large text-left uppercase tracking-wide text-secondary-white font-normal",
+    "date-rest text-lg text-left uppercase tracking-wide text-secondary-white font-normal",
   );
   restEl.textContent = "" + rest;
   set([weekdayEl, restEl], dateContainer);

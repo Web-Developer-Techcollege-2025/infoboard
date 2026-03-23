@@ -52,12 +52,18 @@
 }
 
 @layer base {
+  html,
+  body,
   #app {
-    @apply flex min-h-screen flex-col items-center p-8;
+    @apply h-full w-[1920px] overflow-hidden; /* h-[1080px] */
+  }
+
+  #app {
+    @apply flex flex-col items-center p-8;
   }
 
   .app-grid {
-    @apply grid w-full grid-cols-3 grid-rows-[3fr_1fr] gap-16 p-8;
+    @apply grid h-full w-full grid-cols-3 grid-rows-[3fr_1fr] gap-8 p-8;
   }
 
   body {
@@ -65,18 +71,37 @@
   }
 
   h1 {
-    @apply text-center text-9xl font-black font-bold text-accent-yellow text-shadow-[#e6e3a0]/80 text-shadow-[0.4rem_0.4rem_0.5rem_rgba(0,0,0,0.5)];
+    @apply w-1/3 text-center;
+  }
+
+  h1 img {
+    @apply h-auto w-full;
   }
 
   h2 {
-    @apply mb-10 text-center text-7xl font-bold;
+    @apply mb-5 text-center text-4xl font-black text-primary-red;
+  }
+
+  section.dr-news-module h2 {
+    @apply text-secondary-white;
   }
 }
 
 @layer components {
   /* Put custom component class styles here */
   section.module {
-    @apply flex flex-col rounded-xl p-10;
+    @apply flex h-full w-full flex-col rounded-xl p-5;
+  }
+
+  section.activities-module,
+  section.menu-module,
+  section.rejseplanen-module {
+    @apply bg-secondary-white/50 text-white;
+  }
+
+  section.weather-clock-module,
+  section.dr-news-module {
+    @apply text-secondary-white;
   }
 }
 

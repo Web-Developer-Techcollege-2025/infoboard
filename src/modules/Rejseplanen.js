@@ -3,29 +3,26 @@ import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
 
 const CACHE_KEY = "rejseplanen";
-const CACHE_TIME = 30 * 1000; // 30 min
+const CACHE_TIME = 30 * 1000; // 30 sec
 
 export async function RejseplanenModule() {
   const rejseplanenContainer = create(
     "section",
-    "rejseplanenContainer module bg-secondary-white/50"
+    "rejseplanenContainer module bg-secondary-white/50",
   );
 
-  const busTitle = create(
-    "h2",
-    "busTitle mb-10 text-center text-7xl font-black text-primary-red"
-  );
+  const busTitle = create("h2");
   busTitle.textContent = "BUSTIDER";
 
   const listContainer = create(
     "div",
-    "listContainer grid grid-cols-[1fr_auto] gap-6"
+    "listContainer grid grid-cols-[1fr_auto] gap-4",
   );
 
-  const leftList = create("ul", "leftList flex flex-col gap-5");
+  const leftList = create("ul", "leftList flex flex-col gap-4");
   const rightList = create(
     "ul",
-    "rightList flex flex-col gap-5 border-l-2 border-primary-red pl-6"
+    "rightList flex flex-col gap-4 border-l-2 border-primary-red pl-4",
   );
 
   set([leftList, rightList], listContainer);
@@ -37,19 +34,19 @@ export async function RejseplanenModule() {
   return rejseplanenContainer;
 }
 
-  async function fetchRejseplanenAPI() {
-    const data = await fetchRejseplanen();
+async function fetchRejseplanenAPI() {
+  const data = await fetchRejseplanen();
 
-    localStorage.setItem(
+  localStorage.setItem(
     CACHE_KEY,
     JSON.stringify({
       data,
       timestamp: Date.now(),
-    })
+    }),
   );
 
   return data;
-  }
+}
 
 // ---------- Fetch + cache ----------
 async function getRejseplanenData() {
@@ -58,46 +55,40 @@ async function getRejseplanenData() {
   if (cached) {
     const parsed = JSON.parse(cached);
     const isExpired = Date.now() - parsed.timestamp > CACHE_TIME;
-    console.log(isExpired);
-    
 
     if (!isExpired) {
       return parsed.data;
     } else {
-          return await fetchRejseplanenAPI()
+      return await fetchRejseplanenAPI();
     }
   } else {
-    return await fetchRejseplanenAPI()
-  } 
-
+    return await fetchRejseplanenAPI();
+  }
 }
 
 // ---------- Main render ----------
 function loadBusTimes(data, leftList, rightList) {
   if (!data) {
-    const errorItem = create("li", "text-red-500 text-2xl");
+    const errorItem = create("li", "text-xl text-red-500");
     errorItem.textContent = "Could not load bus times";
     set(errorItem, leftList);
     return;
   }
 
   let departures =
-    data.DepartureBoard?.Departure ||
-    data.Departure ||
-    data.departures ||
-    [];
+    data.DepartureBoard?.Departure || data.Departure || data.departures || [];
 
   if (!Array.isArray(departures)) {
     departures = [departures];
   }
 
-  const firstSix = departures.slice(0, 6);
+  const firstSix = departures.slice(0, 7);
 
   // 🎯 Цвета по номеру автобуса
   const busColors = {
-    "17": ["bg-light-blue", "bg-dark-blue"],
-    "18": ["bg-yellow", "bg-dark-yellow"],
-    "6": ["bg-light-green", "bg-dark-green"],
+    17: ["bg-light-blue", "bg-dark-blue"],
+    18: ["bg-yellow", "bg-dark-yellow"],
+    6: ["bg-light-green", "bg-dark-green"],
   };
 
   firstSix.forEach((dep) => {
@@ -108,31 +99,30 @@ function loadBusTimes(data, leftList, rightList) {
 
     const busNumberValue = name.split(" ")[1] || name;
 
-    const [bgMain, bgCircle] =
-      busColors[busNumberValue] || ["bg-gray-400", "bg-gray-600"];
+    const [bgMain, bgCircle] = busColors[busNumberValue] || [
+      "bg-gray-400",
+      "bg-gray-600",
+    ];
 
     // ---------- Левая колонка ----------
     const leftItem = create(
       "li",
-      `leftItem min-h-[4.5rem] min-w-[7rem] flex items-center rounded-full ${bgMain} text-white shadow-sm`
+      `leftItem flex min-h-[3.8rem] min-w-[6rem] items-center rounded-full ${bgMain} text-accent-yellow shadow-sm`,
     );
 
     const busNumber = create(
       "div",
-      `busNumber flex items-center justify-center min-h-[4.4rem] min-w-[7.5rem] px-4 rounded-full ${bgCircle} text-2xl font-extrabold`
+      `busNumber flex min-h-[3.6rem] min-w-[4.8rem] items-center justify-center rounded-full px-3 ${bgCircle} text-lg font-extrabold`,
     );
     busNumber.textContent = busNumberValue;
 
     const busDirection = create(
       "div",
-      "busDirection ml-4 mr-auto text-3xl font-bold uppercase"
+      "busDirection mr-auto ml-4 text-xl font-bold uppercase",
     );
     busDirection.textContent = direction;
 
-    const busTime = create(
-      "div",
-      "busTime mr-6 text-3xl font-bold"
-    );
+    const busTime = create("div", "busTime mr-4 text-xl font-bold");
     busTime.textContent = time;
 
     set([busNumber, busDirection, busTime], leftItem);
@@ -141,14 +131,14 @@ function loadBusTimes(data, leftList, rightList) {
     // ---------- Правая колонка ----------
     const rightItem = create(
       "li",
-      `rightItem flex items-center justify-center min-h-[4.5rem] min-w-[12rem] rounded-full ${bgCircle} text-white text-3xl font-extrabold shadow-sm`
+      `rightItem flex min-h-[3.8rem] min-w-[7.5rem] items-center justify-center rounded-full ${bgCircle} text-lg font-extrabold text-accent-yellow shadow-sm`,
     );
 
     rightItem.textContent = getRemainingTimeLabel(date, time);
     set(rightItem, rightList);
 
     if (date && time) {
-      startCountdown(date, time, rightItem);
+      startCountdown(date, time, rightItem, leftItem);
     }
   });
 }
@@ -167,6 +157,7 @@ function getRemainingTimeLabel(dateString, timeString) {
   const totalSeconds = Math.floor(diff / 1000);
   const mins = Math.floor(totalSeconds / 60);
 
+  if (diff <= -1 * 60 * 1000) return null;
   if (diff <= 0) return "Too late ☹";
   if (mins >= 20) return "20min+";
   if (mins >= 10) return "10min+";
@@ -180,11 +171,20 @@ function getRemainingTimeLabel(dateString, timeString) {
 }
 
 // ---------- Live update ----------
-function startCountdown(dateString, timeString, element) {
+function startCountdown(dateString, timeString, element, leftElement) {
+  let interval;
+
   function updateCountdown() {
-    element.textContent = getRemainingTimeLabel(dateString, timeString);
+    const label = getRemainingTimeLabel(dateString, timeString);
+    if (label === null) {
+      clearInterval(interval);
+      element.remove();
+      leftElement?.remove();
+      return;
+    }
+    element.textContent = label;
   }
 
   updateCountdown();
-  setInterval(updateCountdown, 1000);
+  interval = setInterval(updateCountdown, 1000);
 }
