@@ -1,3 +1,5 @@
+import "./style.css";
+
 import { get } from "./utils/get.js";
 import { create } from "./utils/create.js";
 import { set } from "./utils/set.js";

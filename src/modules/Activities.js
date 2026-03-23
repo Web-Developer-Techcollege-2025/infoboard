@@ -13,15 +13,9 @@ export async function ActivitiesModule() {
   try {
     const activities = await getActivities();
 
-    const container = create(
-      "section",
-      "module activities-module bg-secondary-white/50"
-    );
+    const container = create("section", `module activities-module`);
 
-    const heading = create(
-      "h2",
-      "m-0 mb-16 pt-12 text-center text-[72px] font-black tracking-[0.25em] text-primary-red"
-    );
+    const heading = create("h2");
     heading.textContent = "SKEMA";
     set(heading, container);
 
@@ -30,46 +24,28 @@ export async function ActivitiesModule() {
 
       const item = create(
         "div",
-        `
-        flex min-h-[4.5rem] items-center rounded-full
-        ${variant.bg}
-        mb-6 text-accent-yellow shadow-sm
-        `
+        `flex items-center justify-between ${variant.bg} mb-8 rounded-full px-10 py-8 transition-transform duration-200`,
       );
 
       const room = create(
         "div",
-        `
-        ${variant.pill}
-        flex min-h-[4.4rem] min-w-[7.5rem] items-center justify-center
-        rounded-full px-4
-        text-2xl font-extrabold
-        `
+        ` ${variant.pill} w-[200px] truncate rounded-full px-6 py-4 text-center text-4xl font-semibold text-white`,
       );
       room.textContent = activity.room;
 
-      const middle = create(
-        "div",
-        "ml-4 mr-auto flex items-center gap-10"
-      );
+      const middle = create("div", `flex flex-1 items-center gap-10 px-10`);
 
-      const team = create(
-        "div",
-        "text-3xl font-bold uppercase"
-      );
+      const team = create("div", `text-4xl font-semibold tracking-wide`);
       team.textContent = activity.team;
 
-      const subject = create(
-        "div",
-        "text-2xl font-semibold opacity-90"
-      );
+      const subject = create("div", `text-3xl font-light opacity-90`);
       subject.textContent = activity.subject;
 
       set([team, subject], middle);
 
       const time = create(
         "div",
-        "mr-6 text-3xl font-bold"
+        `min-w-[140px] text-right text-3xl font-semibold text-white`,
       );
       time.textContent = formatTime(activity.startDate);
 
@@ -83,7 +59,7 @@ export async function ActivitiesModule() {
 
     const errorDiv = create(
       "div",
-      "rounded-3xl bg-primary-red p-10 text-center text-4xl text-white"
+      `rounded-3xl bg-primary-red p-10 text-center text-4xl text-white`,
     );
     errorDiv.textContent = "AKTIVITETER - utilgængelig";
     return errorDiv;

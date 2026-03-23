@@ -2,7 +2,7 @@ import { create } from "./utils/create";
 import superTimImage from "./assets/images/superTim.png";
 
 export function superTim() {
-  const modal = create("div");
+  const modal = create("div", "z-999");
   modal.className = "hidden fixed inset-0 items-end justify-center";
 
   const container = create("div");
