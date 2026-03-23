@@ -62,7 +62,7 @@ export async function DRNewsModule() {
 
         const overlay = create(
           "div",
-          "overlay relative flex w-full flex-col gap-10 rounded-lg bg-linear-to-t from-black/70 to-transparent p-10 tracking-wide",
+          "overlay relative flex h-full w-full flex-col gap-10 rounded-lg bg-linear-to-t from-black/70 to-transparent p-5 tracking-wide",
         );
 
         const qrCanvas = create("canvas", "qr-code z-10");

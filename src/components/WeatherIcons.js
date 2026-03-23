@@ -27,12 +27,15 @@ const iconMap = {
 };
 
 export function weatherIcon(description) {
-  const container = create("div", "weather-icon px-10 pt-5 pb-5");
+  const container = create(
+    "div",
+    "weather-icon flex items-center justify-center",
+  );
   const icon = iconMap[description];
 
   if (!icon) return container;
 
-  const img = create("img", "weather-icon-img");
+  const img = create("img", "weather-icon-img h-auto w-30");
   img.src = icon;
 
   set(img, container);

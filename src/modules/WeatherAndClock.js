@@ -10,7 +10,7 @@ import { set } from "../utils/set";
 export function WeatherClockModule() {
   const weatherAndClockContainer = create(
     "section",
-    "module weather-clock-module flex flex-row items-center gap-5 rounded-xl bg-accent-yellow/40",
+    "module weather-clock-module flex flex-row gap-5 rounded-xl bg-accent-yellow/40",
   );
 
   const clockContainer = create(
@@ -27,13 +27,13 @@ export function WeatherClockModule() {
 
   const clockAndDateContainer = create(
     "div",
-    "clock-date-container flex h-1/4 w-full flex-col items-center gap-5",
+    "clock-date-container flex w-full flex-col items-center gap-5",
   );
   set([clockContainer, dateContainer], clockAndDateContainer);
 
   const weatherContainer = create(
     "div",
-    "weather-container h-1/4 w-full rounded-xl bg-purple",
+    "weather-container flex w-full flex-col justify-center rounded-xl bg-purple",
   );
 
   async function updateWeather() {
@@ -51,7 +51,10 @@ export function WeatherClockModule() {
         set([icon, temp], weatherContainer);
       })
       .catch((err) => {
-        const error = create("p", "weather-error text-secondary-white font-bold");
+        const error = create(
+          "p",
+          "weather-error font-bold text-secondary-white",
+        );
         error.textContent = "Vejrudsigten ikke tilgængeligt";
         set(error, weatherContainer);
         console.error(err);

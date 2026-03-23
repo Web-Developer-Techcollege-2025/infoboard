@@ -55,15 +55,16 @@
   html,
   body,
   #app {
-    @apply h-[1080px] w-[1920px] overflow-hidden;
+    @apply h-screen w-screen overflow-hidden;
   }
 
   #app {
-    @apply flex flex-col items-center relative p-8;
+    @apply relative flex flex-col items-center p-4;
   }
 
   .app-grid {
-    @apply grid h-full w-full grid-cols-3 grid-rows-2 gap-8 p-8;
+    @apply grid w-full grid-cols-3 grid-rows-[3fr_1fr] gap-4 p-4;
+    height: 980px;
   }
 
   body {
@@ -90,7 +91,7 @@
 @layer components {
   /* Put custom component class styles here */
   section.module {
-    @apply flex h-full w-full flex-col rounded-xl p-5;
+    @apply flex w-full flex-col rounded-xl p-5;
   }
 
   section.activities-module,

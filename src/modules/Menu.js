@@ -55,8 +55,7 @@ export async function MenuModule() {
       const isToday = key === todayKey;
       card.classList.toggle("opacity-40", isPast);
       card.classList.toggle("bg-accent-yellow/65", isToday);
-      card.classList.toggle("scale-105", isToday);
-      card.classList.toggle("rounded-[30px]", isToday);
+      card.classList.toggle("rounded-xl", isToday);
     });
   }
 
