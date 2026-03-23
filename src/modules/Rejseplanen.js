@@ -84,10 +84,11 @@ function loadBusTimes(data, leftList, rightList) {
 
   const firstSix = departures.slice(0, 7);
 
-  // 🎯 Цвета по номеру автобуса
+  // Цвета по номеру автобуса
   const busColors = {
     17: ["bg-light-blue", "bg-dark-blue"],
     18: ["bg-yellow", "bg-dark-yellow"],
+    19: ["bg-orange", "bg-primary-red"],
     6: ["bg-light-green", "bg-dark-green"],
   };
 

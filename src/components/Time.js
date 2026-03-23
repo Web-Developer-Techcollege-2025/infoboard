@@ -9,7 +9,7 @@ export function time(date = new Date()) {
 
   const timeEl = create(
     "p",
-    "time text-6xl font-extrabold text-secondary-white",
+    "time text-6xl font-extrabold text-shadow-accent-yellow",
   );
   timeEl.textContent = currentTime;
 

@@ -84,7 +84,7 @@
   }
 
   section.dr-news-module h2 {
-    @apply text-secondary-white;
+    @apply text-accent-yellow;
   }
 }
 
@@ -97,12 +97,12 @@
   section.activities-module,
   section.menu-module,
   section.rejseplanen-module {
-    @apply bg-secondary-white/50 text-white;
+    @apply bg-secondary-white/50 text-accent-yellow;
   }
 
   section.weather-clock-module,
   section.dr-news-module {
-    @apply text-secondary-white;
+    @apply text-accent-yellow;
   }
 }
 
