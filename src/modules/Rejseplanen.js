@@ -11,10 +11,7 @@ export async function RejseplanenModule() {
     "rejseplanenContainer module bg-secondary-white/50",
   );
 
-  const busTitle = create(
-    "h2",
-    "m-0 mb-16 pt-12 text-center text-[72px] font-black tracking-[0.25em] text-primary-red",
-  );
+  const busTitle = create("h2");
   busTitle.textContent = "BUSTIDER";
 
   const listContainer = create(
