@@ -12,7 +12,9 @@ export async function fetchRejseplanen() {
     const contentType = rejseplanenResponse.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
       throw new Error(
-        `Rejseplanen API returned non-JSON content (${contentType || "unknown"})`,
+        `Rejseplanen API returned non-JSON content (${
+          contentType || "unknown"
+        })`,
       );
     }
 

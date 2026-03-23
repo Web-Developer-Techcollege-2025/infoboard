@@ -3,7 +3,7 @@ import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
 
 const CACHE_KEY = "rejseplanen";
-const CACHE_TIME = 30 * 1000; // 30 min
+const CACHE_TIME = 30 * 1000; // 30 sec
 
 export async function RejseplanenModule() {
   const rejseplanenContainer = create(
@@ -11,21 +11,18 @@ export async function RejseplanenModule() {
     "rejseplanenContainer module bg-secondary-white/50",
   );
 
-  const busTitle = create(
-    "h2",
-    "m-0 mb-16 pt-12 text-center text-[72px] font-black tracking-[0.25em] text-primary-red",
-  );
+  const busTitle = create("h2");
   busTitle.textContent = "BUSTIDER";
 
   const listContainer = create(
     "div",
-    "listContainer grid grid-cols-[1fr_auto] gap-6",
+    "listContainer grid grid-cols-[1fr_auto] gap-4",
   );
 
-  const leftList = create("ul", "leftList flex flex-col gap-20 p-10");
+  const leftList = create("ul", "leftList flex flex-col gap-4");
   const rightList = create(
     "ul",
-    "rightList flex flex-col gap-20 border-l-2 border-primary-red p-10 pl-6",
+    "rightList flex flex-col gap-4 border-l-2 border-primary-red pl-4",
   );
 
   set([leftList, rightList], listContainer);
@@ -58,7 +55,6 @@ async function getRejseplanenData() {
   if (cached) {
     const parsed = JSON.parse(cached);
     const isExpired = Date.now() - parsed.timestamp > CACHE_TIME;
-    console.log(isExpired);
 
     if (!isExpired) {
       return parsed.data;
@@ -73,7 +69,7 @@ async function getRejseplanenData() {
 // ---------- Main render ----------
 function loadBusTimes(data, leftList, rightList) {
   if (!data) {
-    const errorItem = create("li", "text-2xl text-red-500");
+    const errorItem = create("li", "text-xl text-red-500");
     errorItem.textContent = "Could not load bus times";
     set(errorItem, leftList);
     return;
@@ -86,7 +82,7 @@ function loadBusTimes(data, leftList, rightList) {
     departures = [departures];
   }
 
-  const firstSix = departures.slice(0, 10);
+  const firstSix = departures.slice(0, 7);
 
   // 🎯 Цвета по номеру автобуса
   const busColors = {
@@ -111,22 +107,22 @@ function loadBusTimes(data, leftList, rightList) {
     // ---------- Левая колонка ----------
     const leftItem = create(
       "li",
-      `leftItem flex min-h-[4.5rem] min-w-[7rem] items-center rounded-full ${bgMain} text-accent-yellow shadow-sm`,
+      `leftItem flex min-h-[3.8rem] min-w-[6rem] items-center rounded-full ${bgMain} text-accent-yellow shadow-sm`,
     );
 
     const busNumber = create(
       "div",
-      `busNumber flex min-h-[4.4rem] min-w-[7.5rem] items-center justify-center rounded-full px-4 ${bgCircle} text-2xl font-extrabold`,
+      `busNumber flex min-h-[3.6rem] min-w-[4.8rem] items-center justify-center rounded-full px-3 ${bgCircle} text-lg font-extrabold`,
     );
     busNumber.textContent = busNumberValue;
 
     const busDirection = create(
       "div",
-      "busDirection mr-auto ml-4 text-3xl font-bold uppercase",
+      "busDirection mr-auto ml-4 text-xl font-bold uppercase",
     );
     busDirection.textContent = direction;
 
-    const busTime = create("div", "busTime mr-6 text-3xl font-bold");
+    const busTime = create("div", "busTime mr-4 text-xl font-bold");
     busTime.textContent = time;
 
     set([busNumber, busDirection, busTime], leftItem);
@@ -135,7 +131,7 @@ function loadBusTimes(data, leftList, rightList) {
     // ---------- Правая колонка ----------
     const rightItem = create(
       "li",
-      `rightItem flex min-h-[4.5rem] min-w-[12rem] items-center justify-center rounded-full ${bgCircle} text-3xl font-extrabold text-accent-yellow shadow-sm`,
+      `rightItem flex min-h-[3.8rem] min-w-[7.5rem] items-center justify-center rounded-full ${bgCircle} text-lg font-extrabold text-accent-yellow shadow-sm`,
     );
 
     rightItem.textContent = getRemainingTimeLabel(date, time);
@@ -161,7 +157,7 @@ function getRemainingTimeLabel(dateString, timeString) {
   const totalSeconds = Math.floor(diff / 1000);
   const mins = Math.floor(totalSeconds / 60);
 
-  if (diff <= -1 * 60 * 1000) return null; // 5 min past departure → remove
+  if (diff <= -1 * 60 * 1000) return null;
   if (diff <= 0) return "Too late ☹";
   if (mins >= 20) return "20min+";
   if (mins >= 10) return "10min+";
@@ -176,6 +172,8 @@ function getRemainingTimeLabel(dateString, timeString) {
 
 // ---------- Live update ----------
 function startCountdown(dateString, timeString, element, leftElement) {
+  let interval;
+
   function updateCountdown() {
     const label = getRemainingTimeLabel(dateString, timeString);
     if (label === null) {
@@ -188,5 +186,5 @@ function startCountdown(dateString, timeString, element, leftElement) {
   }
 
   updateCountdown();
-  const interval = setInterval(updateCountdown, 1000);
+  interval = setInterval(updateCountdown, 1000);
 }

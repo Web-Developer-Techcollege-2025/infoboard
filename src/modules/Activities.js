@@ -1,4 +1,3 @@
-
 import { getActivities } from "../data/ActivitiesAPI.js";
 import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
@@ -7,7 +6,7 @@ const colorVariants = [
   { bg: "bg-orange", pill: "bg-primary-red" },
   { bg: "bg-light-green", pill: "bg-dark-green" },
   { bg: "bg-yellow", pill: "bg-dark-yellow" },
-  { bg: "bg-[#2563eb]/20", pill: "bg-[#2563eb]" },
+  { bg: "bg-light-blue", pill: "bg-dark-blue" },
 ];
 
 export async function ActivitiesModule() {
@@ -16,71 +15,50 @@ export async function ActivitiesModule() {
 
     const container = create(
       "section",
-      `
-      module activities-module
-      w-full max-w-[2600px] mx-auto
-      
-      bg-secondary-white/50 text-white
-      flex flex-col justify-start
-      `
+      "module activities-module bg-secondary-white/50"
     );
 
-    const heading = create(
-      "h2",
-      `m-0 mb-16 pt-12 text-center text-[72px] font-black tracking-[0.25em] text-primary-red`,
-    );
+    const heading = create("h2");
     heading.textContent = "SKEMA";
     set(heading, container);
 
-    activities.slice(0, 10).forEach((activity, index) => {
+    activities.slice(0, 6).forEach((activity, index) => {
       const variant = colorVariants[index % colorVariants.length];
 
       const item = create(
         "div",
         `
-        flex items-center justify-between
+        mb-5 flex min-h-[3.8rem] items-center rounded-full
         ${variant.bg}
-        rounded-full
-        px-10 py-8
-        mb-8
-        transition-transform duration-200 hover:scale-[1.02]
+        text-accent-yellow shadow-sm
         `
       );
+
 
       const room = create(
         "div",
-        `
+        `flex min-h-[3.8rem] min-w-[5.2rem] items-center justify-center
+        rounded-full px-3
         ${variant.pill}
-        rounded-full text-center font-semibold text-white
-        w-[200px]
-        px-6 py-4
-        text-4xl
-        truncate
+        text-xl font-extrabold
         `
       );
-      room.textContent = activity.room;
+      room.textContent = activity.room || "-";
 
       const middle = create(
         "div",
-        `
-        flex flex-1 items-center
-        gap-10 px-10
-        `
+        "ml-4 mr-auto flex items-center gap-5"
       );
 
       const team = create(
         "div",
-        `
-        text-4xl font-semibold tracking-wide
-        `
+        "text-xl font-bold"
       );
       team.textContent = activity.team;
 
       const subject = create(
         "div",
-        `
-        text-3xl font-light opacity-90
-        `
+        "max-w-[170px] text-xl opacity-90"
       );
       subject.textContent = activity.subject;
 
@@ -88,10 +66,7 @@ export async function ActivitiesModule() {
 
       const time = create(
         "div",
-        `
-        text-3xl font-semibold text-white
-        min-w-[140px] text-right
-        `
+        "mr-4 text-xl font-bold shrink-0"
       );
       time.textContent = formatTime(activity.startDate);
 
@@ -105,10 +80,7 @@ export async function ActivitiesModule() {
 
     const errorDiv = create(
       "div",
-      `
-      rounded-3xl bg-primary-red text-white
-      p-10 text-4xl text-center
-      `
+      "rounded-3xl bg-primary-red p-10 text-center text-xl text-white"
     );
     errorDiv.textContent = "AKTIVITETER - utilgængelig";
     return errorDiv;
@@ -122,4 +94,3 @@ function formatTime(dateString) {
     minute: "2-digit",
   });
 }
-
