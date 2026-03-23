@@ -13,7 +13,10 @@ export async function ActivitiesModule() {
   try {
     const activities = await getActivities();
 
-    const container = create("section", `module activities-module`);
+    const container = create(
+      "section",
+      "module activities-module bg-secondary-white/50"
+    );
 
     const heading = create("h2");
     heading.textContent = "SKEMA";
@@ -24,28 +27,46 @@ export async function ActivitiesModule() {
 
       const item = create(
         "div",
-        `flex items-center justify-between ${variant.bg} mb-8 rounded-full px-10 py-8 transition-transform duration-200`,
+        `
+        mb-5 flex min-h-[3.8rem] items-center rounded-full
+        ${variant.bg}
+        text-accent-yellow shadow-sm
+        `
       );
+
 
       const room = create(
         "div",
-        ` ${variant.pill} w-[200px] truncate rounded-full px-6 py-4 text-center text-4xl font-semibold text-white`,
+        `flex min-h-[3.8rem] min-w-[5.2rem] items-center justify-center
+        rounded-full px-3
+        ${variant.pill}
+        text-xl font-extrabold
+        `
       );
-      room.textContent = activity.room;
+      room.textContent = activity.room || "-";
 
-      const middle = create("div", `flex flex-1 items-center gap-10 px-10`);
+      const middle = create(
+        "div",
+        "ml-4 mr-auto flex items-center gap-5"
+      );
 
-      const team = create("div", `text-4xl font-semibold tracking-wide`);
+      const team = create(
+        "div",
+        "text-xl font-bold"
+      );
       team.textContent = activity.team;
 
-      const subject = create("div", `text-3xl font-light opacity-90`);
+      const subject = create(
+        "div",
+        "max-w-[170px] text-xl opacity-90"
+      );
       subject.textContent = activity.subject;
 
       set([team, subject], middle);
 
       const time = create(
         "div",
-        `min-w-[140px] text-right text-3xl font-semibold text-white`,
+        "mr-4 text-xl font-bold shrink-0"
       );
       time.textContent = formatTime(activity.startDate);
 
@@ -59,7 +80,7 @@ export async function ActivitiesModule() {
 
     const errorDiv = create(
       "div",
-      `rounded-3xl bg-primary-red p-10 text-center text-4xl text-white`,
+      "rounded-3xl bg-primary-red p-10 text-center text-xl text-white"
     );
     errorDiv.textContent = "AKTIVITETER - utilgængelig";
     return errorDiv;
