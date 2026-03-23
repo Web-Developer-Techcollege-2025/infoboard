@@ -55,11 +55,11 @@
   html,
   body,
   #app {
-    @apply h-full w-[1920px] overflow-hidden; /* h-[1080px] */
+    @apply h-[1080px] w-[1920px] overflow-hidden;
   }
 
   #app {
-    @apply flex flex-col items-center p-8;
+    @apply flex flex-col items-center relative p-8;
   }
 
   .app-grid {
