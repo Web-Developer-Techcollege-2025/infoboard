@@ -1,0 +1,6 @@
+[[redirects]]
+  from = "/kantineapi/*"
+  to = "https://infoskaerm.techcollege.dk/:splat"
+  status = 200
+  force = true
+  headers = {Referer = "https://infoskaerm.techcollege.dk/", Origin = "https://infoskaerm.techcollege.dk"}
