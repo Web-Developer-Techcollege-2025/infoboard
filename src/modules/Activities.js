@@ -14,71 +14,27 @@ export async function ActivitiesModule() {
     const activities = await getActivities();
     const container = create(
       "section",
-<<<<<<< HEAD
       `
       module activities-module
       w-full max-w-[2600px] mx-auto
       bg-secondary-white/50 text-white
       flex flex-col justify-start
       `
-=======
-      "module activities-module bg-secondary-white/50"
->>>>>>> b50e28187bba7bcd282acb7310d3e714c4faa328
     );
 
     const heading = create("h2");
     heading.textContent = "SKEMA";
     set(heading, container);
 
-<<<<<<< HEAD
     const now = new Date();
 
     const Activities = activities.filter(
       (a) => new Date(a.startDate) > now
     );
 
-  // fredag
-
-    const today = now.getDay(); 
-    let showWeekendMessage = false;
-
-    if (upcomingActivities.length === 0) {
-      if (today === 6 || today === 0) {
-        
-        showWeekendMessage = true;
-      } else if (today === 5) {
-      
-        const fridayActivities = activities
-          .filter((a) => new Date(a.startDate).getDay() === 5)
-          .map((a) => new Date(a.startDate).getTime() + 60 * 60000); // 60 min default duration
-
-        const lastLectureEnd = fridayActivities.length
-          ? Math.max(...fridayActivities)
-          : 0;
-
-        if (now.getTime() >= lastLectureEnd) showWeekendMessage = true;
-      }
-    }
-
-    if (showWeekendMessage) {
-      const weekendDiv = create(
-        "div",
-        `
-        text-center text-6xl font-bold
-        text-primary-red py-20
-        `
-      );
-      weekendDiv.textContent = "God weekend!";
-      set(weekendDiv, container);
-      return container;
-    }
-
-   //fredag ende
+ 
 
     activities.slice(0, 10).forEach((activity, index) => {
-=======
-    activities.slice(0, 6).forEach((activity, index) => {
->>>>>>> b50e28187bba7bcd282acb7310d3e714c4faa328
       const variant = colorVariants[index % colorVariants.length];
 
       const item = create(
