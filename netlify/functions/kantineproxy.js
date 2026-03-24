@@ -24,18 +24,18 @@ export default async (req, context) => {
 
     const text = await response.text();
 
-    // API returns XML despite ?type=json param
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, "text/xml");
+    // API returns XML despite ?type=json param — parse with regex
+    const weekMatch = text.match(/<Week>(\d+)<\/Week>/);
+    const week = weekMatch ? parseInt(weekMatch[1]) : null;
 
-    const week = xml.querySelector("Week")?.textContent ?? null;
-    const dayNodes = xml.querySelectorAll("CanteenDay");
-    const days = Array.from(dayNodes).map((day) => ({
-      DayName: day.querySelector("DayName")?.textContent ?? "",
-      Dish: day.querySelector("Dish")?.textContent ?? "",
-    }));
+    const days = [];
+    const dayRegex = /<CanteenDay>[\s\S]*?<DayName>(.*?)<\/DayName>[\s\S]*?<Dish>(.*?)<\/Dish>[\s\S]*?<\/CanteenDay>/g;
+    let match;
+    while ((match = dayRegex.exec(text)) !== null) {
+      days.push({ DayName: match[1], Dish: match[2] });
+    }
 
-    const data = { Week: week ? parseInt(week) : null, Days: days };
+    const data = { Week: week, Days: days };
 
     return new Response(JSON.stringify(data), {
       status: 200,
