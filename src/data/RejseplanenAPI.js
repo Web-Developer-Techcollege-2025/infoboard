@@ -23,5 +23,4 @@ export async function fetchRejseplanen() {
   } catch (error) {
     console.error("Error fetching Rejseplanen:", error);
     throw error;
-  }
-}
+  }}

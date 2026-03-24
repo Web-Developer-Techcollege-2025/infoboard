@@ -1,4 +1,4 @@
-const kantineURL = "/kantineapi/umbraco/api/content/getcanteenmenu/?type=json";
+const kantineURL = "/kantineproxy";
 
 export async function fetchMenu() {
   const result = await fetch(kantineURL);
