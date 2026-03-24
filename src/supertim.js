@@ -7,7 +7,7 @@ export function superTim() {
 
   const container = create("div");
   container.className =
-    "flex flex-col items-center justify-center bg-transparent p-6 shadow-none animate-slide-in";
+    "flex flex-col items-center justify-center bg-transparent p-6 shadow-none animate-slide-in w-30";
 
   const img = create("img");
   img.src = superTimImage;
@@ -15,13 +15,14 @@ export function superTim() {
 
   const h2 = create("h2");
   h2.textContent = "SUPERTIM!!!";
+  h2.classList.add("text-[0.4rem]")
 
   setInterval(() => {
     modal.classList.remove("hidden");
     setTimeout(() => {
       modal.classList.add("hidden");
     }, 5_000);
-  }, 50_000);
+  }, 7_200_000);
 
   modal.append(container);
   container.append(img, h2);

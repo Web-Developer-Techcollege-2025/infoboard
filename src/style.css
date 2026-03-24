@@ -115,9 +115,9 @@
 
 @keyframes slide-in {
   0% {
-    transform: translate(-150%, 200%);
+    transform: translate(-150%, 600%);
   }
   100% {
-    transform: translate(150%, -100%);
+    transform: translate(900%, -100%);
   }
 }
