@@ -130,7 +130,7 @@ function loadBusTimes(data, leftList, rightList, onExpired) {
 
     const busNumber = create(
       "div",
-      `busNumber flex min-h-[3.6rem] min-w-[4.8rem] items-center justify-center rounded-full px-3 ${bgCircle} text-lg font-extrabold`,
+      `busNumber flex min-h-[3.8rem] min-w-[4rem] items-center justify-center rounded-full px-3 ${bgCircle} text-lg font-extrabold`,
     );
     busNumber.textContent = busNumberValue;
 
