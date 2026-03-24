@@ -10,8 +10,8 @@ export function popup() {
     modal.classList.remove("hidden");
     setTimeout(() => {
       modal.classList.add("hidden");
-    }, 30_000);
-  }, 600_000);
+    }, 25_000);
+  }, 420_000);
 
   modal.append(PopUpContent());
 
