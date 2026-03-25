@@ -3,7 +3,7 @@ import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
 
 const CACHE_KEY = "rejseplanen";
-const CACHE_TIME = 30 * 60 * 1000; // 30 min
+const CACHE_TIME = 60 * 60 * 1000; // 60 min
 
 export async function RejseplanenModule() {
   const rejseplanenContainer = create(
@@ -28,15 +28,8 @@ export async function RejseplanenModule() {
   set([leftList, rightList], listContainer);
   set([busTitle, listContainer], rejseplanenContainer);
 
-  async function refresh() {
-    leftList.innerHTML = "";
-    rightList.innerHTML = "";
-    const data = await getRejseplanenData();
-    loadBusTimes(data, leftList, rightList, refresh);
-  }
-
-  await refresh();
-  setInterval(refresh, CACHE_TIME);
+  const data = await getRejseplanenData();
+  loadBusTimes(data, leftList, rightList);
 
   return rejseplanenContainer;
 }
@@ -65,16 +58,21 @@ async function getRejseplanenData() {
 
     if (!isExpired) {
       return parsed.data;
-    } else {
-      return await fetchRejseplanenAPI();
     }
-  } else {
-    return await fetchRejseplanenAPI();
+
+    try {
+      return await fetchRejseplanenAPI();
+    } catch (error) {
+      console.warn("Using old cache because API failed", error);
+      return parsed.data;
+    }
   }
+
+  return await fetchRejseplanenAPI();
 }
 
 // ---------- Main render ----------
-function loadBusTimes(data, leftList, rightList, onExpired) {
+function loadBusTimes(data, leftList, rightList) {
   if (!data) {
     const errorItem = create("li", "text-xl text-red-500");
     errorItem.textContent = "Could not load bus times";
@@ -89,17 +87,7 @@ function loadBusTimes(data, leftList, rightList, onExpired) {
     departures = [departures];
   }
 
-  const now = new Date();
-  const futureDepartures = departures.filter((dep) => {
-    const date = dep.date;
-    const time = (dep.rtTime || dep.time || "00:00").slice(0, 5);
-    const dt = new Date(date);
-    const [h, m] = time.split(":").map(Number);
-    dt.setHours(h, m, 0, 0);
-    return dt > now;
-  });
-
-  const firstSix = futureDepartures.slice(0, 7);
+  const firstSix = departures.slice(0, 7);
 
   // Цвета по номеру автобуса
   const busColors = {
@@ -156,7 +144,7 @@ function loadBusTimes(data, leftList, rightList, onExpired) {
     set(rightItem, rightList);
 
     if (date && time) {
-      startCountdown(date, time, rightItem, leftItem, onExpired);
+      startCountdown(date, time, rightItem, leftItem);
     }
   });
 }
@@ -175,7 +163,7 @@ function getRemainingTimeLabel(dateString, timeString) {
   const totalSeconds = Math.floor(diff / 1000);
   const mins = Math.floor(totalSeconds / 60);
 
-  if (diff <= -2 * 60 * 1000) return null;
+  if (diff <= -1 * 60 * 1000) return null;
   if (diff <= 0) return "Too late ☹";
   if (mins >= 20) return "20min+";
   if (mins >= 10) return "10min+";
@@ -189,7 +177,7 @@ function getRemainingTimeLabel(dateString, timeString) {
 }
 
 // ---------- Live update ----------
-function startCountdown(dateString, timeString, element, leftElement, onExpired) {
+function startCountdown(dateString, timeString, element, leftElement) {
   let interval;
 
   function updateCountdown() {
@@ -198,7 +186,6 @@ function startCountdown(dateString, timeString, element, leftElement, onExpired)
       clearInterval(interval);
       element.remove();
       leftElement?.remove();
-      onExpired?.();
       return;
     }
     element.textContent = label;
