@@ -19,14 +19,14 @@ BackgroundGradient();
 const app = get("#app");
 set(superTim(), app);
 
-const h1 = create("h1", "w-1/4 text-center");
+const h1 = create("h1", "w-2/9");
 
 const logo = create("img", "h-auto w-full");
 logo.src = logoSrc;
 set(logo, h1);
 
 const grid = create("div", "app-grid");
-set([grid, h1], app);
+set([h1, grid], app);
 
 (async () => {
   set(await ActivitiesModule(), grid);
