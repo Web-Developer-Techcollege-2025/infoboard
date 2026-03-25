@@ -43,7 +43,7 @@ export function WeatherClockModule() {
       .then((data) => {
         const temp = create(
           "p",
-          "weather-temp p-3 text-center text-3xl font-bold tracking-wider text-accent-yellow",
+          "weather-temp p-3 text-center text-4xl font-bold tracking-wider text-accent-yellow",
         );
         const icon = weatherIcon(data.weather[0].description);
         temp.textContent = `${Math.round(data.main.temp)}°C`;
@@ -51,10 +51,7 @@ export function WeatherClockModule() {
         set([icon, temp], weatherContainer);
       })
       .catch((err) => {
-        const error = create(
-          "p",
-          "weather-error font-bold text-accent-yellow",
-        );
+        const error = create("p", "weather-error font-bold text-accent-yellow");
         error.textContent = "Vejrudsigten ikke tilgængeligt";
         set(error, weatherContainer);
         console.error(err);
