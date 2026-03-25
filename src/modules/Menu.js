@@ -1,3 +1,4 @@
+import { create } from "../utils/create.js";
 import { fetchMenu } from "../data/MenuAPI.js";
 
 const DAYS = [
@@ -9,33 +10,27 @@ const DAYS = [
 ];
 
 export async function MenuModule() {
-  const section = document.createElement("section");
-  section.className = "menu-module module bg-secondary-white/50";
+  const section = create("section", "menu-module module bg-secondary-white/50");
 
-  const heading = document.createElement("h2");
+  const heading = create("h2");
   heading.textContent = "UGENS MENU";
   section.appendChild(heading);
 
   const dishElement = {};
   const priceElement = {};
   DAYS.forEach(({ key, label }) => {
-    const card = document.createElement("div");
-    card.className = "p-5 w-full";
+    const card = create("div", "w-full p-5");
     card.dataset.day = key;
 
-    const title = document.createElement("h3");
-    title.className = "text-primary-red text-xl tracking-widest";
+    const title = create("h3", "text-xl tracking-widest text-primary-red");
     title.textContent = label;
 
-    const row = document.createElement("div");
-    row.className = "flex justify-between w-full gap-2";
+    const row = create("div", "flex w-full justify-between gap-2");
 
-    const dish = document.createElement("p");
-    dish.className = "text-primary-red text-xl flex-1 font-bold";
+    const dish = create("p", "flex-1 text-xl font-bold text-primary-red");
     dish.textContent = "–";
 
-    const price = document.createElement("p");
-    price.className = "text-xl shrink-0 text-primary-red font-bold";
+    const price = create("p", "shrink-0 text-xl font-bold text-primary-red");
 
     dishElement[key] = dish;
     priceElement[key] = price;

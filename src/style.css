@@ -63,7 +63,7 @@
   }
 
   .app-grid {
-    @apply grid w-full grid-cols-3 grid-rows-[3fr_2fr] gap-4;
+    @apply grid w-full grid-cols-3 grid-rows-[2fr_1fr] gap-4;
     height: 980px;
   }
 
@@ -72,7 +72,7 @@
   }
 
   h2 {
-    @apply mb-5 text-center text-4xl font-black text-primary-red;
+    @apply mb-5 text-center text-4xl font-black tracking-widest text-primary-red;
   }
 
   section.dr-news-module h2 {
