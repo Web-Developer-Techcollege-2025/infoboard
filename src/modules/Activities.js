@@ -37,7 +37,7 @@ export async function ActivitiesModule() {
 
       const room = create(
         "div",
-        `flex min-h-[3.8rem] min-w-[5.2rem] items-center justify-center
+        `flex min-h-[3.8rem] min-w-[7.5rem] items-center justify-center
         rounded-full px-3
         ${variant.pill}
         text-xl font-extrabold
@@ -58,7 +58,7 @@ export async function ActivitiesModule() {
 
       const subject = create(
         "div",
-        "max-w-[170px] text-xl opacity-90"
+        "max-w-42 text-xl first-letter:uppercase opacity-90"
       );
       subject.textContent = activity.subject;
 

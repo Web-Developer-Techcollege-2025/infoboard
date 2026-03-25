@@ -35,7 +35,7 @@ export function weatherIcon(description) {
 
   if (!icon) return container;
 
-  const img = create("img", "weather-icon-img h-auto w-20");
+  const img = create("img", "weather-icon-img h-auto w-30");
   img.src = icon;
 
   set(img, container);

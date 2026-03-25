@@ -2,48 +2,60 @@ import { fetchRejseplanen } from "../data/RejseplanenAPI.js";
 import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
 
-const CACHE_KEY = "rejseplanen";
-const CACHE_TIME = 30 * 60 * 1000; // 30 min
+// ---------- CONFIG ----------
 
+// Key used to store data in localStorage
+const CACHE_KEY = "rejseplanen";
+
+// Cache duration (60 minutes)
+const CACHE_TIME = 60 * 60 * 1000;
+
+// ---------- MAIN MODULE (creates UI) ----------
 export async function RejseplanenModule() {
+
+  // Main container for the module
   const rejseplanenContainer = create(
     "section",
     "rejseplanenContainer module bg-secondary-white/50",
   );
 
+  // Title
   const busTitle = create("h2");
   busTitle.textContent = "BUSTIDER";
 
+  // Grid container (left = buses, right = countdown)
   const listContainer = create(
     "div",
     "listContainer grid grid-cols-[1fr_auto] gap-4",
   );
 
+  // Left column (bus info)
   const leftList = create("ul", "leftList flex flex-col gap-4");
+
+  // Right column (countdown timers)
   const rightList = create(
     "ul",
     "rightList flex flex-col gap-4 border-l-2 border-primary-red pl-4",
   );
 
+  // Build DOM structure
   set([leftList, rightList], listContainer);
   set([busTitle, listContainer], rejseplanenContainer);
 
-  async function refresh() {
-    leftList.innerHTML = "";
-    rightList.innerHTML = "";
-    const data = await getRejseplanenData();
-    loadBusTimes(data, leftList, rightList, refresh);
-  }
+  // Get data (from cache or API)
+  const data = await getRejseplanenData();
 
-  await refresh();
-  setInterval(refresh, CACHE_TIME);
+  // Start rendering loop
+  startBusRendering(data, leftList, rightList, listContainer);
 
   return rejseplanenContainer;
 }
 
+// ---------- FETCH FROM API AND SAVE TO CACHE ----------
 async function fetchRejseplanenAPI() {
   const data = await fetchRejseplanen();
 
+  // Save API response + timestamp to localStorage
   localStorage.setItem(
     CACHE_KEY,
     JSON.stringify({
@@ -55,53 +67,91 @@ async function fetchRejseplanenAPI() {
   return data;
 }
 
-// ---------- Fetch + cache ----------
+// ---------- GET DATA (CACHE FIRST, THEN API) ----------
 async function getRejseplanenData() {
   const cached = localStorage.getItem(CACHE_KEY);
 
   if (cached) {
     const parsed = JSON.parse(cached);
+
+    // Check if cache is expired
     const isExpired = Date.now() - parsed.timestamp > CACHE_TIME;
 
+    // If cache is still valid → use it
     if (!isExpired) {
       return parsed.data;
-    } else {
-      return await fetchRejseplanenAPI();
     }
-  } else {
-    return await fetchRejseplanenAPI();
+
+    // If expired → try fetching new data
+    try {
+      return await fetchRejseplanenAPI();
+    } catch (error) {
+      // If API fails → fallback to old cache
+      console.warn("Using old cache because API failed", error);
+      return parsed.data;
+    }
   }
+
+  // If no cache → fetch from API
+  return await fetchRejseplanenAPI();
 }
 
-// ---------- Main render ----------
-function loadBusTimes(data, leftList, rightList, onExpired) {
+// ---------- START RENDER LOOP ----------
+function startBusRendering(data, leftList, rightList, listContainer) {
+
+  // If no data at all → show message
   if (!data) {
-    const errorItem = create("li", "text-xl text-red-500");
-    errorItem.textContent = "Could not load bus times";
-    set(errorItem, leftList);
+    renderNoBusesMessage(leftList, rightList, listContainer);
     return;
   }
 
+  // Extract departures (API structure can vary)
   let departures =
-    data.DepartureBoard?.Departure || data.Departure || data.departures || [];
+    data.DepartureBoard?.Departure ||
+    data.Departure ||
+    data.departures ||
+    [];
 
+  // Ensure it's always an array
   if (!Array.isArray(departures)) {
     departures = [departures];
   }
 
-  const now = new Date();
-  const futureDepartures = departures.filter((dep) => {
-    const date = dep.date;
-    const time = (dep.rtTime || dep.time || "00:00").slice(0, 5);
-    const dt = new Date(date);
-    const [h, m] = time.split(":").map(Number);
-    dt.setHours(h, m, 0, 0);
-    return dt > now;
-  });
+  // Function that updates UI every second
+  function render() {
+    renderBusTimes(departures, leftList, rightList, listContainer);
+  }
 
-  const firstSix = futureDepartures.slice(0, 7);
+  render(); // initial render
+  setInterval(render, 1000); // update every second (no API calls)
+}
 
-  // Цвета по номеру автобуса
+// ---------- MAIN RENDER FUNCTION ----------
+function renderBusTimes(departures, leftList, rightList, listContainer) {
+
+  // Clear previous UI
+  leftList.innerHTML = "";
+  rightList.innerHTML = "";
+
+  // Restore normal layout (2 columns + divider line)
+  rightList.classList.remove("hidden");
+  rightList.classList.add("border-l-2", "border-primary-red");
+
+  listContainer.classList.remove("grid-cols-1");
+  listContainer.classList.add("grid-cols-[1fr_auto]");
+
+  // Filter out buses that already left
+  const visibleDepartures = departures
+    .filter((dep) => !isDepartureExpired(dep))
+    .slice(0, 7); // show max 7
+
+  // If no valid buses → show empty state
+  if (!visibleDepartures.length) {
+    renderNoBusesMessage(leftList, rightList, listContainer);
+    return;
+  }
+
+  // Color mapping based on bus number
   const busColors = {
     17: ["bg-light-blue", "bg-dark-blue"],
     18: ["bg-yellow", "bg-dark-yellow"],
@@ -109,20 +159,23 @@ function loadBusTimes(data, leftList, rightList, onExpired) {
     6: ["bg-light-green", "bg-dark-green"],
   };
 
-  firstSix.forEach((dep) => {
+  // Create UI for each bus
+  visibleDepartures.forEach((dep) => {
+
     const name = dep.name || "Bus";
     const direction = dep.direction || "No direction";
     const time = (dep.rtTime || dep.time || "00:00").slice(0, 5);
-    const date = dep.date;
 
+    // Extract bus number from name
     const busNumberValue = name.split(" ")[1] || name;
 
+    // Get colors (fallback to gray if unknown)
     const [bgMain, bgCircle] = busColors[busNumberValue] || [
       "bg-gray-400",
       "bg-gray-600",
     ];
 
-    // ---------- Левая колонка ----------
+    // ---------- LEFT COLUMN ----------
     const leftItem = create(
       "li",
       `leftItem flex min-h-[3.8rem] min-w-[6rem] items-center rounded-full ${bgMain} text-accent-yellow shadow-sm`,
@@ -130,7 +183,7 @@ function loadBusTimes(data, leftList, rightList, onExpired) {
 
     const busNumber = create(
       "div",
-      `busNumber flex min-h-[3.6rem] min-w-[4.8rem] items-center justify-center rounded-full px-3 ${bgCircle} text-lg font-extrabold`,
+      `busNumber flex min-h-[3.8rem] min-w-[4rem] items-center justify-center rounded-full px-3 ${bgCircle} text-lg font-extrabold`,
     );
     busNumber.textContent = busNumberValue;
 
@@ -146,37 +199,69 @@ function loadBusTimes(data, leftList, rightList, onExpired) {
     set([busNumber, busDirection, busTime], leftItem);
     set(leftItem, leftList);
 
-    // ---------- Правая колонка ----------
+    // ---------- RIGHT COLUMN ----------
     const rightItem = create(
       "li",
       `rightItem flex min-h-[3.8rem] min-w-[7.5rem] items-center justify-center rounded-full ${bgCircle} text-lg font-extrabold text-accent-yellow shadow-sm`,
     );
 
-    rightItem.textContent = getRemainingTimeLabel(date, time);
-    set(rightItem, rightList);
+    // Set countdown label
+    rightItem.textContent = getRemainingTimeLabel(dep);
 
-    if (date && time) {
-      startCountdown(date, time, rightItem, leftItem, onExpired);
-    }
+    set(rightItem, rightList);
   });
 }
 
-// ---------- Countdown logic ----------
-function getRemainingTimeLabel(dateString, timeString) {
+// ---------- EMPTY STATE ----------
+function renderNoBusesMessage(leftList, rightList, listContainer) {
+
+  leftList.innerHTML = "";
+  rightList.innerHTML = "";
+
+  // Hide right column + remove divider
+  rightList.classList.add("hidden");
+  rightList.classList.remove("border-l-2", "border-primary-red");
+
+  // Switch to single column layout
+  listContainer.classList.remove("grid-cols-[1fr_auto]");
+  listContainer.classList.add("grid-cols-1");
+
+  const messageItem = create(
+    "li",
+    "rounded-full bg-secondary-white/40 px-6 py-4 text-center text-lg font-bold text-primary-red",
+  );
+
+  messageItem.textContent =
+    "Busplanen er ikke klar lige nu - tjek igen senere";
+
+  set(messageItem, leftList);
+}
+
+// ---------- CHECK IF BUS IS EXPIRED ----------
+function isDepartureExpired(dep) {
+  const departureTime = getDepartureDate(dep);
+  if (!departureTime) return true;
+
+  return departureTime <= new Date();
+}
+
+// ---------- COUNTDOWN DISPLAY ----------
+function getRemainingTimeLabel(dep) {
+  const departureTime = getDepartureDate(dep);
+  if (!departureTime) return "--:--";
+
   const now = new Date();
-
-  const departureTime = new Date(dateString);
-  const [hours, minutes] = timeString.split(":").map(Number);
-
-  departureTime.setHours(hours, minutes, 0, 0);
-
   const diff = departureTime - now;
+
+  // If already departed → show original time
+  if (diff <= 0) {
+    return dep.rtTime || dep.time || "--:--";
+  }
 
   const totalSeconds = Math.floor(diff / 1000);
   const mins = Math.floor(totalSeconds / 60);
 
-  if (diff <= -2 * 60 * 1000) return null;
-  if (diff <= 0) return "Too late ☹";
+  // Simplified labels for longer waits
   if (mins >= 20) return "20min+";
   if (mins >= 10) return "10min+";
 
@@ -188,22 +273,17 @@ function getRemainingTimeLabel(dateString, timeString) {
   return `${formattedMins}:${formattedSecs}`;
 }
 
-// ---------- Live update ----------
-function startCountdown(dateString, timeString, element, leftElement, onExpired) {
-  let interval;
+// ---------- HELPER: BUILD DATE ----------
+function getDepartureDate(dep) {
+  const dateString = dep.date;
+  const timeString = (dep.rtTime || dep.time || "").slice(0, 5);
 
-  function updateCountdown() {
-    const label = getRemainingTimeLabel(dateString, timeString);
-    if (label === null) {
-      clearInterval(interval);
-      element.remove();
-      leftElement?.remove();
-      onExpired?.();
-      return;
-    }
-    element.textContent = label;
-  }
+  if (!dateString || !timeString) return null;
 
-  updateCountdown();
-  interval = setInterval(updateCountdown, 1000);
+  const departureTime = new Date(dateString);
+  const [hours, minutes] = timeString.split(":").map(Number);
+
+  departureTime.setHours(hours, minutes, 0, 0);
+
+  return departureTime;
 }
