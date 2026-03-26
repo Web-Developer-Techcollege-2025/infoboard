@@ -179,7 +179,7 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
   const busColors = {
     17: ["bg-light-blue", "bg-dark-blue"],
     18: ["bg-yellow", "bg-dark-yellow"],
-    19: ["bg-orange", "bg-primary-red"],
+    19: ["bg-orange", "bg-dark-orange"],
     6: ["bg-light-green", "bg-dark-green"],
   };
 
