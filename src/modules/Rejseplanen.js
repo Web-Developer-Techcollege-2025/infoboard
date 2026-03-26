@@ -30,12 +30,12 @@ export async function RejseplanenModule() {
   );
 
   // Left column (bus info)
-  const leftList = create("ul", "leftList flex flex-col gap-4");
+  const leftList = create("ul", "leftList flex flex-col gap-6");
 
   // Right column (countdown timers)
   const rightList = create(
     "ul",
-    "rightList flex flex-col gap-4 border-l-2 border-primary-red pl-4",
+    "rightList flex flex-col gap-6 border-l-2 border-primary-red pl-4",
   );
 
   // Build DOM structure

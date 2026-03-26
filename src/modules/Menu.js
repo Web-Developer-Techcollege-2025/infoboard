@@ -12,6 +12,8 @@ const DAYS = [
 export async function MenuModule() {
   const section = create("section", "menu-module module bg-secondary-white/50");
 
+  const menuShow = create("div", "flex flex-col gap-11");
+
   const heading = create("h2");
   heading.textContent = "UGENS MENU";
   section.appendChild(heading);
@@ -19,15 +21,15 @@ export async function MenuModule() {
   const dishElement = {};
   const priceElement = {};
   DAYS.forEach(({ key, label }) => {
-    const card = create("div", "w-full p-5");
+    const card = create("div", "w-full px-5");
     card.dataset.day = key;
 
-    const title = create("h3", "text-xl tracking-widest text-primary-red");
+    const title = create("h3", "text-3xl tracking-widest text-primary-red");
     title.textContent = label;
 
     const row = create("div", "flex w-full justify-between gap-2");
 
-    const dish = create("p", "flex-1 text-xl font-bold text-primary-red");
+    const dish = create("p", "flex-1 text-2xl font-bold text-primary-red");
     dish.textContent = "–";
 
     const price = create("p", "shrink-0 text-xl font-bold text-primary-red");
@@ -38,7 +40,8 @@ export async function MenuModule() {
     row.appendChild(price);
     card.appendChild(title);
     card.appendChild(row);
-    section.appendChild(card);
+    menuShow.appendChild(card);
+    section.appendChild(menuShow);
   });
 
   function highlightToday() {
