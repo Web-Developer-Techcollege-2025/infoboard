@@ -17,7 +17,7 @@ export async function DRNewsModule() {
 
     const newsWrapper = create(
       "div",
-      "news-wrapper flex h-full flex-row justify-center gap-5 rounded-xl text-xl font-medium text-white",
+      "news-wrapper flex h-full flex-row justify-center gap-5 rounded-xl text-lg font-medium text-white",
     );
     set(newsWrapper, drNewsModule);
 
@@ -52,8 +52,10 @@ export async function DRNewsModule() {
 
         const overlay = create(
           "div",
-          "overlay relative flex h-full w-full flex-col gap-4 rounded-lg bg-linear-to-t from-black/70 to-transparent p-5 tracking-wide",
+          "overlay flex h-full w-full flex-col justify-between rounded-lg bg-linear-to-t from-black/80 to-transparent p-5 tracking-wide",
         );
+
+        const paragraphQRWrapper = create("div", "flex justify-between gap-5");
 
         const qrCanvas = create("canvas", "qr-code z-10");
         await QRCode.toCanvas(qrCanvas, item.link, {
@@ -63,7 +65,7 @@ export async function DRNewsModule() {
 
         const qrWrapper = create(
           "div",
-          "absolute right-4 bottom-4 flex h-20 w-20 items-center justify-center self-end rounded-sm bg-white p-1",
+          "qr-wrapper flex h-20 w-20 items-center justify-center self-end rounded-sm bg-white p-1",
         );
 
         const timeCategoryWrapper = create(
@@ -79,13 +81,14 @@ export async function DRNewsModule() {
 
         const paragraph = create(
           "p",
-          "news-paragraph text-2xl leading-tight wrap-break-word",
+          "news-paragraph align-bottom text-2xl leading-tight wrap-break-word hyphens-auto",
         );
         paragraph.textContent = item.title;
 
         set(qrCanvas, qrWrapper);
         set([timeSinceLabel, pubDateLabel], timeCategoryWrapper);
-        set([timeCategoryWrapper, paragraph, qrWrapper], overlay);
+        set([timeCategoryWrapper, paragraphQRWrapper], overlay);
+        set([paragraph, qrWrapper], paragraphQRWrapper);
         set(overlay, newsItemContainer);
         set(newsItemContainer, newsWrapper);
       }
