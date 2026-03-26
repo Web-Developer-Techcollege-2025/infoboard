@@ -59,11 +59,11 @@
   }
 
   #app {
-    @apply relative flex flex-col items-center justify-between p-4;
+    @apply relative flex flex-col items-center justify-between p-5;
   }
 
   .app-grid {
-    @apply grid w-full grid-cols-3 grid-rows-[2fr_1fr] gap-4;
+    @apply grid w-full grid-cols-3 grid-rows-[2fr_1fr] gap-5;
     height: 980px;
   }
 

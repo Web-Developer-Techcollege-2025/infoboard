@@ -39,23 +39,22 @@ export function WeatherClockModule() {
   async function updateWeather() {
     weatherContainer.innerHTML = "";
 
-    fetchWeather()
-      .then((data) => {
-        const temp = create(
-          "p",
-          "weather-temp p-3 text-center text-4xl font-bold tracking-wider text-accent-yellow",
-        );
-        const icon = weatherIcon(data.weather[0].description);
-        temp.textContent = `${Math.round(data.main.temp)}°C`;
+    try {
+      const data = await fetchWeather();
+      const temp = create(
+        "p",
+        "weather-temp p-3 text-center text-4xl font-bold tracking-wider text-accent-yellow",
+      );
+      const icon = weatherIcon(data.weather[0].description);
+      temp.textContent = `${Math.round(data.main.temp)}°C`;
 
-        set([icon, temp], weatherContainer);
-      })
-      .catch((err) => {
-        const error = create("p", "weather-error font-bold text-accent-yellow");
-        error.textContent = "Vejrudsigten ikke tilgængeligt";
-        set(error, weatherContainer);
-        console.error(err);
-      });
+      set([icon, temp], weatherContainer);
+    } catch (err) {
+      const error = create("p", "weather-error font-bold text-accent-yellow");
+      error.textContent = "Vejrudsigten ikke tilgængeligt";
+      set(error, weatherContainer);
+      console.error(err);
+    }
   }
 
   updateWeather();
