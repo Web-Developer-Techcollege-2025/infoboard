@@ -15,13 +15,13 @@ export function WeatherClockModule() {
 
   const clockContainer = create(
     "div",
-    "clock-container flex h-full w-full content-start items-center justify-center rounded-xl bg-purple text-center",
+    "clock-container flex h-full w-full content-start items-center justify-center rounded-xl bg-purple/40 text-center",
   );
   set(time(), clockContainer);
 
   const dateContainer = create(
     "div",
-    "date-container flex h-full w-full items-center justify-center rounded-xl bg-purple text-center",
+    "date-container flex h-full w-full items-center justify-center rounded-xl bg-purple/40 text-center",
   );
   set(date(), dateContainer);
 
@@ -33,7 +33,7 @@ export function WeatherClockModule() {
 
   const weatherContainer = create(
     "div",
-    "weather-container flex w-full flex-col justify-center rounded-xl bg-purple",
+    "weather-container flex w-full flex-col justify-center rounded-xl bg-purple/40",
   );
 
   async function updateWeather() {

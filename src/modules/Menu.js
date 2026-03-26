@@ -54,6 +54,7 @@ export async function MenuModule() {
       card.classList.toggle("opacity-40", isPast);
       card.classList.toggle("bg-accent-yellow/65", isToday);
       card.classList.toggle("rounded-xl", isToday);
+      card.classList.toggle("p-8", isToday);
     });
   }
 

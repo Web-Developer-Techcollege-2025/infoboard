@@ -55,7 +55,10 @@ export async function DRNewsModule() {
           "overlay flex h-full w-full flex-col justify-between rounded-lg bg-linear-to-t from-black/80 to-transparent p-5 tracking-wide",
         );
 
-        const paragraphQRWrapper = create("div", "flex justify-between gap-5");
+        const paragraphQRWrapper = create(
+          "div",
+          "paragraph-qr-wrapper flex items-end justify-between gap-5",
+        );
 
         const qrCanvas = create("canvas", "qr-code z-10");
         await QRCode.toCanvas(qrCanvas, item.link, {
@@ -97,7 +100,7 @@ export async function DRNewsModule() {
     }
 
     await renderBatch();
-    setInterval(renderBatch, 120000);
+    setInterval(renderBatch, 10_000);
   } catch (error) {
     console.error("Error rendering DR news:", error);
   }
