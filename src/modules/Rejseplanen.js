@@ -7,45 +7,37 @@ import { set } from "../utils/set.js";
 // Key used to store data in localStorage
 const CACHE_KEY = "rejseplanen";
 
-// Cache duration (60 minutes)
-const CACHE_TIME = 60 * 60 * 1000;
+// Key used to remember the last fetch slot
+const LAST_FETCH_SLOT_KEY = "rejseplanen-last-fetch-slot";
+
+// Cache duration (30 minutes)
+const CACHE_TIME = 30 * 60 * 1000;
 
 // ---------- MAIN MODULE (creates UI) ----------
 export async function RejseplanenModule() {
-
-  // Main container for the module
   const rejseplanenContainer = create(
     "section",
     "rejseplanenContainer module bg-secondary-white/50",
   );
 
-  // Title
   const busTitle = create("h2");
   busTitle.textContent = "BUSTIDER";
 
-  // Grid container (left = buses, right = countdown)
   const listContainer = create(
     "div",
     "listContainer grid grid-cols-[1fr_auto] gap-4",
   );
 
-  // Left column (bus info)
   const leftList = create("ul", "leftList flex flex-col gap-6");
-
-  // Right column (countdown timers)
   const rightList = create(
     "ul",
     "rightList flex flex-col gap-6 border-l-2 border-primary-red pl-4",
   );
 
-  // Build DOM structure
   set([leftList, rightList], listContainer);
   set([busTitle, listContainer], rejseplanenContainer);
 
-  // Get data (from cache or API)
   const data = await getRejseplanenData();
-
-  // Start rendering loop
   startBusRendering(data, leftList, rightList, listContainer);
 
   return rejseplanenContainer;
@@ -55,7 +47,6 @@ export async function RejseplanenModule() {
 async function fetchRejseplanenAPI() {
   const data = await fetchRejseplanen();
 
-  // Save API response + timestamp to localStorage
   localStorage.setItem(
     CACHE_KEY,
     JSON.stringify({
@@ -64,17 +55,20 @@ async function fetchRejseplanenAPI() {
     }),
   );
 
+  // Save current half-hour slot
+  localStorage.setItem(LAST_FETCH_SLOT_KEY, getCurrentHalfHourSlot());
+
   return data;
 }
 
 // ---------- GET DATA (CACHE FIRST, THEN API) ----------
 async function getRejseplanenData() {
   const cached = localStorage.getItem(CACHE_KEY);
+  const lastFetchSlot = localStorage.getItem(LAST_FETCH_SLOT_KEY);
+  const currentSlot = getCurrentHalfHourSlot();
 
   if (cached) {
     const parsed = JSON.parse(cached);
-
-    // Check if cache is expired
     const isExpired = Date.now() - parsed.timestamp > CACHE_TIME;
 
     // If cache is still valid → use it
@@ -82,76 +76,106 @@ async function getRejseplanenData() {
       return parsed.data;
     }
 
-    // If expired → try fetching new data
+    // If cache expired, only fetch if we are allowed in this time window
+    if (canFetchNow() && lastFetchSlot !== currentSlot) {
+      try {
+        return await fetchRejseplanenAPI();
+      } catch (error) {
+        console.warn("Using old cache because API failed", error);
+        return parsed.data;
+      }
+    }
+
+    // Outside allowed time or already fetched in this slot → keep old cache
+    return parsed.data;
+  }
+
+  // If no cache exists, only fetch during allowed hours
+  if (canFetchNow()) {
     try {
       return await fetchRejseplanenAPI();
     } catch (error) {
-      // If API fails → fallback to old cache
-      console.warn("Using old cache because API failed", error);
-      return parsed.data;
+      console.warn("No cache available and API fetch failed", error);
+      return null;
     }
   }
 
-  // If no cache → fetch from API
-  return await fetchRejseplanenAPI();
+  // No cache + outside allowed fetch hours
+  return null;
+}
+
+// ---------- TIME RULES ----------
+function canFetchNow() {
+  const now = new Date();
+  const hour = now.getHours();
+  const minutes = now.getMinutes();
+
+  // Allowed from 08:00 to 17:00
+  // This allows slots:
+  // 08:00, 08:30, 09:00 ... 16:30, 17:00
+  if (hour < 8) return false;
+  if (hour > 17) return false;
+  if (hour === 17 && minutes > 0) return false;
+
+  return true;
+}
+
+function getCurrentHalfHourSlot() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hour = String(now.getHours()).padStart(2, "0");
+  const half = now.getMinutes() < 30 ? "00" : "30";
+
+  return `${year}-${month}-${day}-${hour}:${half}`;
 }
 
 // ---------- START RENDER LOOP ----------
 function startBusRendering(data, leftList, rightList, listContainer) {
-
-  // If no data at all → show message
   if (!data) {
     renderNoBusesMessage(leftList, rightList, listContainer);
     return;
   }
 
-  // Extract departures (API structure can vary)
   let departures =
     data.DepartureBoard?.Departure ||
     data.Departure ||
     data.departures ||
     [];
 
-  // Ensure it's always an array
   if (!Array.isArray(departures)) {
     departures = [departures];
   }
 
-  // Function that updates UI every second
   function render() {
     renderBusTimes(departures, leftList, rightList, listContainer);
   }
 
-  render(); // initial render
-  setInterval(render, 1000); // update every second (no API calls)
+  render();
+  setInterval(render, 1000);
 }
 
 // ---------- MAIN RENDER FUNCTION ----------
 function renderBusTimes(departures, leftList, rightList, listContainer) {
-
-  // Clear previous UI
   leftList.innerHTML = "";
   rightList.innerHTML = "";
 
-  // Restore normal layout (2 columns + divider line)
   rightList.classList.remove("hidden");
   rightList.classList.add("border-l-2", "border-primary-red");
 
   listContainer.classList.remove("grid-cols-1");
   listContainer.classList.add("grid-cols-[1fr_auto]");
 
-  // Filter out buses that already left
   const visibleDepartures = departures
     .filter((dep) => !isDepartureExpired(dep))
-    .slice(0, 7); // show max 7
+    .slice(0, 7);
 
-  // If no valid buses → show empty state
   if (!visibleDepartures.length) {
     renderNoBusesMessage(leftList, rightList, listContainer);
     return;
   }
 
-  // Color mapping based on bus number
   const busColors = {
     17: ["bg-light-blue", "bg-dark-blue"],
     18: ["bg-yellow", "bg-dark-yellow"],
@@ -159,17 +183,13 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
     6: ["bg-light-green", "bg-dark-green"],
   };
 
-  // Create UI for each bus
   visibleDepartures.forEach((dep) => {
-
     const name = dep.name || "Bus";
     const direction = dep.direction || "No direction";
     const time = (dep.rtTime || dep.time || "00:00").slice(0, 5);
 
-    // Extract bus number from name
     const busNumberValue = name.split(" ")[1] || name;
 
-    // Get colors (fallback to gray if unknown)
     const [bgMain, bgCircle] = busColors[busNumberValue] || [
       "bg-gray-400",
       "bg-gray-600",
@@ -205,7 +225,6 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
       `rightItem flex min-h-[3.8rem] min-w-[7.5rem] items-center justify-center rounded-full ${bgCircle} text-lg font-extrabold text-accent-yellow shadow-sm`,
     );
 
-    // Set countdown label
     rightItem.textContent = getRemainingTimeLabel(dep);
 
     set(rightItem, rightList);
@@ -214,15 +233,12 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
 
 // ---------- EMPTY STATE ----------
 function renderNoBusesMessage(leftList, rightList, listContainer) {
-
   leftList.innerHTML = "";
   rightList.innerHTML = "";
 
-  // Hide right column + remove divider
   rightList.classList.add("hidden");
   rightList.classList.remove("border-l-2", "border-primary-red");
 
-  // Switch to single column layout
   listContainer.classList.remove("grid-cols-[1fr_auto]");
   listContainer.classList.add("grid-cols-1");
 
@@ -253,7 +269,6 @@ function getRemainingTimeLabel(dep) {
   const now = new Date();
   const diff = departureTime - now;
 
-  // If already departed → show original time
   if (diff <= 0) {
     return dep.rtTime || dep.time || "--:--";
   }
@@ -261,7 +276,6 @@ function getRemainingTimeLabel(dep) {
   const totalSeconds = Math.floor(diff / 1000);
   const mins = Math.floor(totalSeconds / 60);
 
-  // Simplified labels for longer waits
   if (mins >= 20) return "20min+";
   if (mins >= 10) return "10min+";
 

@@ -3,7 +3,7 @@ import { create } from "../utils/create.js";
 import { set } from "../utils/set.js";
 
 const colorVariants = [
-  { bg: "bg-orange", pill: "bg-primary-red" },
+  { bg: "bg-orange", pill: "bg-dark-orange" },
   { bg: "bg-light-green", pill: "bg-dark-green" },
   { bg: "bg-yellow", pill: "bg-dark-yellow" },
   { bg: "bg-light-blue", pill: "bg-dark-blue" },
