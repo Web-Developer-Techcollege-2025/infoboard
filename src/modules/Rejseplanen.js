@@ -31,8 +31,13 @@ export async function RejseplanenModule() {
   async function refresh() {
     leftList.innerHTML = "";
     rightList.innerHTML = "";
-    const data = await getRejseplanenData();
-    loadBusTimes(data, leftList, rightList, refresh);
+    try {
+      const data = await getRejseplanenData();
+      loadBusTimes(data, leftList, rightList, refresh);
+    } catch (error) {
+      console.error("Could not refresh Rejseplanen module:", error);
+      loadBusTimes(null, leftList, rightList, refresh, error);
+    }
   }
 
   await refresh();
@@ -72,10 +77,10 @@ async function getRejseplanenData() {
   }
 }
 
-function loadBusTimes(data, leftList, rightList, onExpired) {
+function loadBusTimes(data, leftList, rightList, onExpired, error = null) {
   if (!data) {
-    const errorItem = create("li", "text-xl text-red-500");
-    errorItem.textContent = "Could not load bus times";
+    const errorItem = create("li", "text-xl text-purple");
+    errorItem.textContent = getRejseplanenErrorMessage(error);
     set(errorItem, leftList);
     return;
   }
@@ -213,4 +218,12 @@ function startCountdown(
 
   updateCountdown();
   interval = setInterval(updateCountdown, 1000 * 60);
+}
+
+function getRejseplanenErrorMessage(error) {
+  if (error?.status === 401) {
+    return "Rejseplanen er ikke tilgængelig lige nu, vend tilbage senere.";
+  }
+
+  return "Kunne ikke loade bustiderne fra Rejseplanen.";
 }

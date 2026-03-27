@@ -28,11 +28,25 @@ set(logo, h1);
 const grid = create("div", "app-grid");
 set([h1, grid], app);
 
+async function mountModule(moduleFactory, container, moduleName) {
+  try {
+    const moduleElement = await moduleFactory();
+    set(moduleElement, container);
+  } catch (error) {
+    console.error(`Failed to render ${moduleName}:`, error);
+  }
+}
+
 (async () => {
-  set(await ActivitiesModule(), grid);
-  set(await MenuModule(), grid);
-  set(await RejseplanenModule(), grid);
-  set(await WeatherClockModule(), grid);
-  set(await DRNewsModule(), grid);
-  set(popup(), app);
+  await mountModule(ActivitiesModule, grid, "Activities module");
+  await mountModule(MenuModule, grid, "Menu module");
+  await mountModule(RejseplanenModule, grid, "Rejseplanen module");
+  await mountModule(WeatherClockModule, grid, "Weather and clock module");
+  await mountModule(DRNewsModule, grid, "DR News module");
+
+  try {
+    set(popup(), app);
+  } catch (error) {
+    console.error("Failed to render popup:", error);
+  }
 })();

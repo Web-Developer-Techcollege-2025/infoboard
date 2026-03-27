@@ -4,10 +4,13 @@ const rejseplanenURL =
 export async function fetchRejseplanen() {
   try {
     const rejseplanenResponse = await fetch(rejseplanenURL);
-    if (!rejseplanenResponse.ok)
-      throw new Error(
+    if (!rejseplanenResponse.ok) {
+      const error = new Error(
         `Fetching failed: ${rejseplanenResponse.status} ${rejseplanenResponse.statusText}`,
       );
+      error.status = rejseplanenResponse.status;
+      throw error;
+    }
 
     const contentType = rejseplanenResponse.headers.get("content-type") || "";
     if (!contentType.includes("application/json")) {
@@ -23,4 +26,5 @@ export async function fetchRejseplanen() {
   } catch (error) {
     console.error("Error fetching Rejseplanen:", error);
     throw error;
-  }}
+  }
+}
