@@ -1,7 +1,7 @@
 import { create } from "../utils/create";
 import { set } from "../utils/set";
 
-export function date(date = new Date()) {
+export function dateClock(date = new Date()) {
   const weekday = date.toLocaleDateString("da-DK", {
     weekday: "long",
   });
@@ -30,5 +30,6 @@ export function date(date = new Date()) {
   restEl.textContent = "" + rest;
   set([weekdayEl, restEl], dateContainer);
 
+  setTimeout(dateClock, 1000)
   return dateContainer;
 }

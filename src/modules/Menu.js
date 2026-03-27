@@ -12,7 +12,7 @@ const DAYS = [
 export async function MenuModule() {
   const section = create("section", "menu-module module bg-secondary-white/50");
 
-  const menuShow = create("div", "flex flex-col gap-11");
+  const menuShow = create("div", "flex flex-col gap-6");
 
   const heading = create("h2");
   heading.textContent = "UGENS MENU";
@@ -52,9 +52,9 @@ export async function MenuModule() {
       const isPast = dayCount < today;
       const isToday = key === todayKey;
       card.classList.toggle("opacity-40", isPast);
-      card.classList.toggle("bg-accent-yellow/65", isToday);
+      card.classList.toggle("bg-accent-yellow/75", isToday);
       card.classList.toggle("rounded-xl", isToday);
-      card.classList.toggle("p-8", isToday);
+      card.classList.toggle("p-7", isToday);
     });
   }
 

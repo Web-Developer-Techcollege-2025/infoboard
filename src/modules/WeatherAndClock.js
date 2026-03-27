@@ -1,11 +1,12 @@
 import { fetchWeather } from "../data/WeatherAPI";
 
 import { time } from "../components/Time";
-import { date } from "../components/Date";
+import { dateClock } from "../components/Date";
 import { weatherIcon } from "../components/WeatherIcons";
 
 import { create } from "../utils/create";
 import { set } from "../utils/set";
+
 
 export function WeatherClockModule() {
   const weatherAndClockContainer = create(
@@ -23,7 +24,7 @@ export function WeatherClockModule() {
     "div",
     "date-container flex h-full w-full items-center justify-center rounded-xl bg-purple/40 text-center",
   );
-  set(date(), dateContainer);
+  set(dateClock(), dateContainer);
 
   const clockAndDateContainer = create(
     "div",

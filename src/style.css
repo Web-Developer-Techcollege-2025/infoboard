@@ -3,18 +3,18 @@
 
 @theme {
   /* === COLORS === */
-  --color-primary-red: #6A18D4;
+  --color-primary-red: #2306c2;
   --color-accent-yellow: #fffcc6;
   --color-secondary-white: #ffffff;
   --color-orange: #e48846;
-  --color-dark-orange: #D14938;
+  --color-dark-orange: #d14938;
   --color-light-orange: #f7c894;
   --color-yellow: #f5c961;
   --color-dark-yellow: #f0a901;
   --color-light-blue: #b5b5ff;
   --color-dark-blue: #4c4ddb;
-  --color-blue: #6A18D4;
-  --color-purple: #6A18D4;
+  --color-blue: #2306c2;
+  --color-purple: #2306c2;
   --color-dark-green: #146d57;
   --color-light-green: #97beac;
 
