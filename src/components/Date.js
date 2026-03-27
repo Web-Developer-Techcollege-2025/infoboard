@@ -1,7 +1,7 @@
 import { create } from "../utils/create";
 import { set } from "../utils/set";
 
-export function date(date = new Date()) {
+export function dateClock(date = new Date()) {
   const weekday = date.toLocaleDateString("da-DK", {
     weekday: "long",
   });
@@ -30,31 +30,6 @@ export function date(date = new Date()) {
   restEl.textContent = "" + rest;
   set([weekdayEl, restEl], dateContainer);
 
-  function scheduleNextUpdate() {
-    const now = new Date();
-    const midnight = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1,
-      0, 0, 0, 0
-    );
-    const msUntilMidnight = midnight - now;
-
-    setTimeout(() => {
-      const newDate = new Date();
-
-      weekdayEl.textContent = newDate.toLocaleDateString("da-Dk", {
-        weekday: "long",
-      }) + " ";
-      restEl.textContent = newDate.toLocaleDateString("da-DK", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      });
-
-      scheduleNextUpdate();
-    }, msUntilMidnight);
-  }
-  scheduleNextUpdate();
+  setTimeout(dateClock, 1000)
   return dateContainer;
 }
