@@ -8,7 +8,7 @@ let currentIndex = 0;
 export async function DRNewsModule() {
   const drNewsModule = create(
     "section",
-    "dr-news-module module col-span-2 col-start-2 bg-blue/40",
+    "dr-news-module module col-span-2 col-start-2",
   );
 
   try {
@@ -41,7 +41,7 @@ export async function DRNewsModule() {
 
         const newsItemContainer = create(
           "div",
-          "news-item flex w-full flex-col rounded-xl bg-blue/50",
+          "news-item flex w-full flex-col rounded-xl bg-purple",
         );
 
         if (item.enclosure?.link) {
@@ -73,7 +73,7 @@ export async function DRNewsModule() {
 
         const timeCategoryWrapper = create(
           "div",
-          "time-category-wrapper flex justify-between",
+          "time-category-wrapper flex justify-between text-lg",
         );
 
         const timeSinceLabel = create("span", "time-since");
@@ -84,7 +84,7 @@ export async function DRNewsModule() {
 
         const paragraph = create(
           "p",
-          "news-paragraph align-bottom text-2xl leading-tight wrap-break-word hyphens-auto",
+          "news-paragraph align-bottom text-xl leading-normal wrap-break-word hyphens-auto",
         );
         paragraph.textContent = item.title;
 

@@ -19,10 +19,10 @@ export async function RejseplanenModule() {
     "listContainer grid grid-cols-[1fr_auto] gap-4",
   );
 
-  const leftList = create("ul", "leftList flex flex-col gap-4");
+  const leftList = create("ul", "leftList flex flex-col gap-6");
   const rightList = create(
     "ul",
-    "rightList flex flex-col gap-4 border-l-2 border-primary-red pl-4",
+    "rightList flex flex-col gap-6 border-l-2 border-primary-red pl-4",
   );
 
   set([leftList, rightList], listContainer);

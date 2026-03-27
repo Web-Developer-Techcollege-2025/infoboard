@@ -14,22 +14,22 @@ export function dateClock(date = new Date()) {
 
   const dateContainer = create(
     "div",
-    "day-date-container flex py-1 w-full flex-col items-center justify-center",
+    "day-date-container flex w-full flex-col items-center justify-center gap-[0.2rem] py-1",
   );
 
   const weekdayEl = create(
     "span",
-    "date-weekday text-3xl font-bold uppercase tracking-wide text-accent-yellow",
+    "date-weekday text-3xl font-bold tracking-wide text-accent-yellow uppercase",
   );
   weekdayEl.textContent = weekday + " ";
 
   const restEl = create(
     "span",
-    "date-rest text-lg text-left uppercase tracking-wide text-accent-yellow font-normal",
+    "date-rest text-left text-lg font-normal tracking-wide text-accent-yellow uppercase",
   );
   restEl.textContent = "" + rest;
   set([weekdayEl, restEl], dateContainer);
 
-  setTimeout(dateClock, 1000)
+  setTimeout(dateClock, 1000);
   return dateContainer;
 }

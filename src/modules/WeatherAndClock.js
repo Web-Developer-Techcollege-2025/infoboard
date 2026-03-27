@@ -7,7 +7,6 @@ import { weatherIcon } from "../components/WeatherIcons";
 import { create } from "../utils/create";
 import { set } from "../utils/set";
 
-
 export function WeatherClockModule() {
   const weatherAndClockContainer = create(
     "section",
@@ -16,13 +15,13 @@ export function WeatherClockModule() {
 
   const clockContainer = create(
     "div",
-    "clock-container flex h-full w-full content-start items-center justify-center rounded-xl bg-purple/40 text-center",
+    "clock-container flex h-full w-full content-start items-center justify-center rounded-xl bg-purple text-center",
   );
   set(time(), clockContainer);
 
   const dateContainer = create(
     "div",
-    "date-container flex h-full w-full items-center justify-center rounded-xl bg-purple/40 text-center",
+    "date-container flex h-full w-full items-center justify-center rounded-xl bg-purple text-center",
   );
   set(dateClock(), dateContainer);
 
@@ -34,7 +33,7 @@ export function WeatherClockModule() {
 
   const weatherContainer = create(
     "div",
-    "weather-container flex w-full flex-col justify-center rounded-xl bg-purple/40",
+    "weather-container flex w-full flex-col justify-center rounded-xl bg-purple",
   );
 
   async function updateWeather() {

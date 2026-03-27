@@ -14,7 +14,7 @@
   --color-light-blue: #b5b5ff;
   --color-dark-blue: #4c4ddb;
   --color-blue: #2306c2;
-  --color-purple: #2306c2;
+  --color-purple: #9451ce;
   --color-dark-green: #146d57;
   --color-light-green: #97beac;
 
@@ -83,18 +83,7 @@
 @layer components {
   /* Put custom component class styles here */
   section.module {
-    @apply flex w-full flex-col rounded-xl p-5;
-  }
-
-  section.activities-module,
-  section.menu-module,
-  section.rejseplanen-module {
-    @apply bg-secondary-white/50 text-accent-yellow;
-  }
-
-  section.weather-clock-module,
-  section.dr-news-module {
-    @apply text-accent-yellow;
+    @apply flex w-full flex-col rounded-xl bg-secondary-white/50 p-5 text-white;
   }
 }
 

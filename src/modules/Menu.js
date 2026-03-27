@@ -12,7 +12,10 @@ const DAYS = [
 export async function MenuModule() {
   const section = create("section", "menu-module module bg-secondary-white/50");
 
-  const menuShow = create("div", "flex flex-col gap-6");
+  const menuShow = create(
+    "div",
+    "menu-container flex h-full flex-col justify-between gap-6",
+  );
 
   const heading = create("h2");
   heading.textContent = "UGENS MENU";
@@ -21,18 +24,24 @@ export async function MenuModule() {
   const dishElement = {};
   const priceElement = {};
   DAYS.forEach(({ key, label }) => {
-    const card = create("div", "w-full px-5");
+    const card = create("div", "menu-card w-full px-5");
     card.dataset.day = key;
 
-    const title = create("h3", "text-3xl tracking-widest text-primary-red");
+    const title = create("h3", "text-lg tracking-widest text-primary-red");
     title.textContent = label;
 
-    const row = create("div", "flex w-full justify-between gap-2");
+    const row = create(
+      "div",
+      "dish-price-container flex w-full justify-between gap-4 text-xl",
+    );
 
-    const dish = create("p", "flex-1 text-2xl font-bold text-primary-red");
+    const dish = create(
+      "p",
+      "dish flex-1 font-bold wrap-break-word hyphens-auto text-primary-red",
+    );
     dish.textContent = "–";
 
-    const price = create("p", "shrink-0 text-xl font-bold text-primary-red");
+    const price = create("p", "price shrink-0 font-bold text-primary-red");
 
     dishElement[key] = dish;
     priceElement[key] = price;
