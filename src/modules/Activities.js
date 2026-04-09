@@ -13,7 +13,7 @@ export async function ActivitiesModule() {
   try {
     const container = create(
       "section",
-      "module activities-module bg-secondary-white/50",
+      "module activities-module",
     );
 
     const heading = create("h2");

@@ -31,10 +31,7 @@ const REFRESH_INTERVAL = 60 * 1000;
 
 export async function RejseplanenModule() {
   // main section that contains the whole module
-  const rejseplanenContainer = create(
-    "section",
-    "rejseplanenContainer module bg-secondary-white/50",
-  );
+  const rejseplanenContainer = create("section", "rejseplanenContainer module");
 
   // title
   const busTitle = create("h2");
@@ -176,19 +173,26 @@ function canFetchNow() {
   const hour = now.getHours();
   const minutes = now.getMinutes();
 
-  // fetch is allowed from 08:00 to 17:00
+  // fetch is allowed from 08:00 to 18:00
   // examples:
   // 07:59 -> false
   // 08:00 -> true
   // 16:45 -> true
-  // 17:00 -> true
-  // 17:01 -> false
+  // 18:00 -> true
+  // 18:01 -> false
 
   if (hour < 8) return false;
-  if (hour > 17) return false;
-  if (hour === 17 && minutes > 0) return false;
+  if (hour > 18) return false;
+  if (hour === 18 && minutes > 0) return false;
 
   return true;
+}
+
+function isAfterServiceHours() {
+  const now = new Date();
+  const hour = now.getHours();
+  const minutes = now.getMinutes();
+  return hour > 18 || (hour === 18 && minutes > 0);
 }
 
 function getCurrentHalfHourSlot() {
@@ -281,6 +285,11 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
   // clear old content before drawing fresh UI
   leftList.innerHTML = "";
   rightList.innerHTML = "";
+
+  // restore normal list sizing/gap when buses are available
+  leftList.classList.remove("h-full");
+  leftList.classList.add("gap-6");
+  listContainer.classList.remove("h-full");
 
   // make sure right column is visible
   rightList.classList.remove("hidden");
@@ -389,13 +398,25 @@ function renderNoBusesMessage(leftList, rightList, listContainer) {
   listContainer.classList.remove("grid-cols-[1fr_auto]");
   listContainer.classList.add("grid-cols-1");
 
+  // match menu error card sizing by letting the message fill available module height
+  listContainer.classList.add("h-full");
+  leftList.classList.remove("gap-6");
+  leftList.classList.add("h-full");
+
   // create message item
   const messageItem = create(
     "li",
-    "rounded-full bg-secondary-white/40 px-6 py-4 text-center text-lg font-bold text-primary-blue",
+    "flex h-full items-center justify-center rounded-xl bg-secondary-white/40 p-8 text-center",
   );
 
-  messageItem.textContent = "Busplanen er ikke klar lige nu - tjek igen senere";
+  const messageText = create(
+    "p",
+    "max-w-[26ch] text-2xl font-bold tracking-wide text-balance text-primary-blue",
+  );
+  messageText.textContent = isAfterServiceHours()
+    ? "Busplanen vender tilbage igen kl. 8:00 i morgen"
+    : "Busplanen kan ikke tilgås lige nu";
+  messageItem.append(messageText);
 
   // show message in left column
   set(messageItem, leftList);

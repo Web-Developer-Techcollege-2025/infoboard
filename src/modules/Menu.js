@@ -10,7 +10,7 @@ const DAYS = [
 ];
 
 export async function MenuModule() {
-  const section = create("section", "menu-module module bg-secondary-white/50");
+  const section = create("section", "menu-module module");
 
   const menuShow = create(
     "div",
@@ -127,8 +127,8 @@ function showMenuErrorState(section, error) {
   );
   errorText.textContent =
     error?.status === 403
-      ? "Menuen kan kun tilgås på Techcollege's netværk"
-      : "Menuen kan ikke tilgås lige nu";
+      ? "Kantinens menu kan kun tilgås på Techcollege's netværk"
+      : "Kantinens menu kan ikke tilgås lige nu";
 
   errorContainer.append(errorText);
   section.append(heading, errorContainer);
