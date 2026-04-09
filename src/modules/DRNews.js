@@ -28,6 +28,7 @@ export async function DRNewsModule() {
         const item = usableItems[currentIndex + i];
 
         const published = new Date(item.pubDate.replace(" ", "T"));
+        const now = new Date();
         const minutesAgo = Math.floor(
           (Date.now() - published.getTime()) / 60000,
         );
@@ -43,8 +44,32 @@ export async function DRNewsModule() {
           timeSince = `${roundedHoursAgo} t. siden`;
         }
 
-        const pubDate = `${published.getDate()}/${published.getMonth() + 1}-${String(published.getFullYear()).slice(2)}`;
         const pubTime = `kl. ${String(published.getHours()).padStart(2, "0")}:${String(published.getMinutes()).padStart(2, "0")}`;
+
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const publishedDay = new Date(
+          published.getFullYear(),
+          published.getMonth(),
+          published.getDate(),
+        );
+
+        let pubDatePrefix;
+        if (publishedDay.getTime() === today.getTime()) {
+          pubDatePrefix = "I dag";
+        } else if (publishedDay.getTime() === yesterday.getTime()) {
+          pubDatePrefix = "I går";
+        } else {
+          const weekday = published.toLocaleDateString("da-DK", {
+            weekday: "long",
+          });
+          pubDatePrefix = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+        }
 
         const newsItemContainer = create(
           "div",
@@ -87,7 +112,7 @@ export async function DRNewsModule() {
         timeSinceLabel.textContent = timeSince;
 
         const pubDateLabel = create("span", "pub-date");
-        pubDateLabel.textContent = `${pubDate} ${pubTime}`;
+        pubDateLabel.textContent = `${pubDatePrefix} ${pubTime}`;
 
         const paragraph = create(
           "p",

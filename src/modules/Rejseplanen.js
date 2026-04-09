@@ -1,6 +1,11 @@
 import { fetchRejseplanen } from "../data/RejseplanenAPI.js";
 import { create } from "../utils/create.js";
+import { createModuleMessageCard } from "../utils/moduleMessageCard.js";
 import { set } from "../utils/set.js";
+import {
+  canUseServiceNow,
+  isAfterServiceHours,
+} from "../utils/serviceHours.js";
 
 // ---------- CONFIG ----------
 
@@ -169,30 +174,7 @@ async function getRejseplanenData() {
 // ---------- TIME RULES ----------
 
 function canFetchNow() {
-  const now = new Date();
-  const hour = now.getHours();
-  const minutes = now.getMinutes();
-
-  // fetch is allowed from 08:00 to 18:00
-  // examples:
-  // 07:59 -> false
-  // 08:00 -> true
-  // 16:45 -> true
-  // 18:00 -> true
-  // 18:01 -> false
-
-  if (hour < 8) return false;
-  if (hour > 18) return false;
-  if (hour === 18 && minutes > 0) return false;
-
-  return true;
-}
-
-function isAfterServiceHours() {
-  const now = new Date();
-  const hour = now.getHours();
-  const minutes = now.getMinutes();
-  return hour > 18 || (hour === 18 && minutes > 0);
+  return canUseServiceNow();
 }
 
 function getCurrentHalfHourSlot() {
@@ -404,19 +386,10 @@ function renderNoBusesMessage(leftList, rightList, listContainer) {
   leftList.classList.add("h-full");
 
   // create message item
-  const messageItem = create(
-    "li",
-    "flex h-full items-center justify-center rounded-xl bg-secondary-white/40 p-8 text-center",
-  );
-
-  const messageText = create(
-    "p",
-    "max-w-[26ch] text-2xl font-bold tracking-wide text-balance text-primary-blue",
-  );
-  messageText.textContent = isAfterServiceHours()
+  const messageText = isAfterServiceHours()
     ? "Busplanen vender tilbage igen kl. 8:00 i morgen"
     : "Busplanen kan ikke tilgås lige nu";
-  messageItem.append(messageText);
+  const messageItem = createModuleMessageCard(messageText, "li");
 
   // show message in left column
   set(messageItem, leftList);

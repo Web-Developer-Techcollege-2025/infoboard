@@ -1,5 +1,7 @@
 import { create } from "../utils/create.js";
 import { fetchMenu } from "../data/MenuAPI.js";
+import { createModuleMessageCard } from "../utils/moduleMessageCard.js";
+import { isAfterServiceHours } from "../utils/serviceHours.js";
 
 const DAYS = [
   { key: "mandag", label: "MANDAG", dayCount: 1 },
@@ -11,6 +13,7 @@ const DAYS = [
 
 export async function MenuModule() {
   const section = create("section", "menu-module module");
+  let isMenuClosed = false;
 
   const menuShow = create(
     "div",
@@ -68,6 +71,14 @@ export async function MenuModule() {
   }
 
   async function updateMenu() {
+    if (isAfterServiceHours()) {
+      if (!isMenuClosed) {
+        showMenuClosedState(section);
+        isMenuClosed = true;
+      }
+      return;
+    }
+
     const dayOfWeek = new Date().getDay();
     if (dayOfWeek === 0 || dayOfWeek === 6) return;
 
@@ -98,6 +109,7 @@ export async function MenuModule() {
 
   setInterval(
     async () => {
+      if (isMenuClosed) return;
       try {
         await updateMenu();
       } catch (err) {
@@ -108,7 +120,27 @@ export async function MenuModule() {
     10 * 60 * 60 * 1000,
   );
 
+  // Check cutoff continuously so the module switches shortly after 18:00
+  setInterval(() => {
+    if (!isMenuClosed && isAfterServiceHours()) {
+      showMenuClosedState(section);
+      isMenuClosed = true;
+    }
+  }, 60 * 1000);
+
   return section;
+}
+
+function showMenuClosedState(section) {
+  section.innerHTML = "";
+
+  const heading = create("h2");
+  heading.textContent = "UGENS MENU";
+
+  const errorContainer = createModuleMessageCard(
+    "Kantinenmenuen vender tilbage igen kl. 8:00 i morgen",
+  );
+  section.append(heading, errorContainer);
 }
 
 function showMenuErrorState(section, error) {
@@ -117,19 +149,11 @@ function showMenuErrorState(section, error) {
   const heading = create("h2");
   heading.textContent = "UGENS MENU";
 
-  const errorContainer = create(
-    "div",
-    "flex h-full items-center justify-center rounded-xl bg-secondary-white/40 p-8 text-center",
-  );
-  const errorText = create(
-    "p",
-    "max-w-[26ch] text-2xl font-bold tracking-wide text-balance text-primary-blue",
-  );
-  errorText.textContent =
+  const errorText =
     error?.status === 403
       ? "Kantinens menu kan kun tilgås på Techcollege's netværk"
       : "Kantinens menu kan ikke tilgås lige nu";
 
-  errorContainer.append(errorText);
+  const errorContainer = createModuleMessageCard(errorText);
   section.append(heading, errorContainer);
 }
