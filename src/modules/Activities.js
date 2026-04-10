@@ -1,5 +1,7 @@
 import { getActivities } from "../data/ActivitiesAPI.js";
 import { create } from "../utils/create.js";
+import { createModuleMessageCard } from "../utils/moduleMessageCard.js";
+import { isAfterServiceHours } from "../utils/serviceHours.js";
 import { set } from "../utils/set.js";
 
 const colorVariants = [
@@ -11,20 +13,25 @@ const colorVariants = [
 
 export async function ActivitiesModule() {
   try {
-    const container = create(
-      "section",
-      "module activities-module",
-    );
+    const container = create("section", "module activities-module");
 
     const heading = create("h2");
     heading.textContent = "SKEMA";
     set(heading, container);
 
-    const scheduleShow = create("div", "flex flex-col gap-6");
+    const scheduleShow = create("div", "flex flex-1 flex-col gap-6");
     set(scheduleShow, container);
 
     async function updateActivities() {
       try {
+        if (isAfterServiceHours()) {
+          renderActivitiesClosedState(scheduleShow);
+          return;
+        }
+
+        scheduleShow.classList.remove("h-full", "justify-center");
+        scheduleShow.classList.add("gap-6");
+
         const activities = await getActivities();
         scheduleShow.innerHTML = "";
 
@@ -79,7 +86,7 @@ export async function ActivitiesModule() {
     }
 
     await updateActivities();
-    setInterval(updateActivities, 30 * 60 * 1000); // Update every half hour
+    setInterval(updateActivities, 60 * 1000); // Check every minute
 
     return container;
   } catch (error) {
@@ -101,4 +108,15 @@ function formatTime(dateString) {
     minute: "2-digit",
     hour12: false,
   });
+}
+
+function renderActivitiesClosedState(scheduleShow) {
+  scheduleShow.innerHTML = "";
+  scheduleShow.classList.remove("gap-6");
+  scheduleShow.classList.add("h-full", "justify-center");
+
+  const message = createModuleMessageCard(
+    "Aktivitetsskemaet vender tilbage igen kl. 8:00 i morgen",
+  );
+  set(message, scheduleShow);
 }
