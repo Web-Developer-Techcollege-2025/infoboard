@@ -120,11 +120,21 @@ export async function MenuModule() {
     10 * 60 * 60 * 1000,
   );
 
-  // Check cutoff continuously so the module switches shortly after 18:00
+  // Check cutoff and reopen continuously so the module switches shortly after 18:00 and reopens at 08:00
   setInterval(() => {
-    if (!isMenuClosed && isAfterServiceHours()) {
+    const shouldBeClosed = isAfterServiceHours();
+
+    if (shouldBeClosed && !isMenuClosed) {
+      // Transitioning to closed state
       showMenuClosedState(section);
       isMenuClosed = true;
+    } else if (!shouldBeClosed && isMenuClosed) {
+      // Transitioning back to open state - reset and fetch fresh menu
+      isMenuClosed = false;
+      updateMenu().catch((err) => {
+        console.error("Failed to fetch menu on reopen:", err);
+        showMenuErrorState(section, err);
+      });
     }
   }, 60 * 1000);
 
