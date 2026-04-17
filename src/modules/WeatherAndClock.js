@@ -12,18 +12,20 @@ export function WeatherClockModule() {
     "section",
     "module weather-clock-module flex flex-row gap-5 rounded-xl bg-secondary-white/40",
   );
+  const timeElement = time();
+  const dateElement = dateClock();
 
   const clockContainer = create(
     "div",
     "clock-container flex h-full w-full content-start items-center justify-center rounded-xl bg-purple text-center",
   );
-  set(time(), clockContainer);
+  set(timeElement, clockContainer);
 
   const dateContainer = create(
     "div",
     "date-container flex h-full w-full items-center justify-center rounded-xl bg-purple text-center",
   );
-  set(dateClock(), dateContainer);
+  set(dateElement, dateContainer);
 
   const clockAndDateContainer = create(
     "div",
@@ -58,7 +60,17 @@ export function WeatherClockModule() {
   }
 
   updateWeather();
-  setInterval(updateWeather, 10 * 60 * 1000);
+  const weatherIntervalId = setInterval(updateWeather, 10 * 60 * 1000);
+
+  weatherAndClockContainer.destroyModule = () => {
+    clearInterval(weatherIntervalId);
+    if (typeof timeElement.destroyModule === "function") {
+      timeElement.destroyModule();
+    }
+    if (typeof dateElement.destroyModule === "function") {
+      dateElement.destroyModule();
+    }
+  };
 
   set([clockAndDateContainer, weatherContainer], weatherAndClockContainer);
   return weatherAndClockContainer;

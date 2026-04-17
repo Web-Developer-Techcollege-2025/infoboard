@@ -6,6 +6,8 @@ export function superTim() {
     "div",
     "fixed inset-0 z-999 hidden items-end justify-center",
   );
+  let showIntervalId = null;
+  let hideTimeoutId = null;
 
   const container = create(
     "div",
@@ -20,15 +22,24 @@ export function superTim() {
   h2.textContent = "SUPERTIM!!!";
   h2.classList.add("text-[0.5rem]");
 
-  setInterval(() => {
+  showIntervalId = setInterval(() => {
     modal.classList.remove("hidden");
-    setTimeout(() => {
+    hideTimeoutId = setTimeout(() => {
       modal.classList.add("hidden");
     }, 5_000); /* Shows for 5 seconds */
   }, 7_200_000); /* Every 2 hours */
 
   modal.append(container);
   container.append(img, h2);
+
+  modal.destroyModule = () => {
+    if (showIntervalId) {
+      clearInterval(showIntervalId);
+    }
+    if (hideTimeoutId) {
+      clearTimeout(hideTimeoutId);
+    }
+  };
 
   return modal;
 }

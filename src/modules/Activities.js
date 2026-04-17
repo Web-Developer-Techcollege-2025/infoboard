@@ -1,7 +1,10 @@
 import { getActivities } from "../data/ActivitiesAPI.js";
 import { create } from "../utils/create.js";
 import { createModuleMessageCard } from "../utils/moduleMessageCard.js";
-import { isAfterServiceHours } from "../utils/serviceHours.js";
+import {
+  canUseServiceNow,
+  getServiceClosedMessage,
+} from "../utils/serviceHours.js";
 import { set } from "../utils/set.js";
 
 const colorVariants = [
@@ -24,7 +27,10 @@ export async function ActivitiesModule() {
 
     async function updateActivities() {
       try {
-        if (isAfterServiceHours()) {
+        const now = new Date();
+        const isWeekday = now.getDay() >= 1 && now.getDay() <= 5;
+
+        if (!isWeekday || !canUseServiceNow(now)) {
           renderActivitiesClosedState(scheduleShow);
           return;
         }
@@ -82,11 +88,16 @@ export async function ActivitiesModule() {
         });
       } catch (error) {
         console.error("Error updating activities:", error);
+        renderActivitiesErrorState(scheduleShow);
       }
     }
 
     await updateActivities();
-    setInterval(updateActivities, 60 * 1000); // Check every minute
+    const intervalId = setInterval(updateActivities, 60 * 1000); // Check every minute
+
+    container.destroyModule = () => {
+      clearInterval(intervalId);
+    };
 
     return container;
   } catch (error) {
@@ -116,7 +127,18 @@ function renderActivitiesClosedState(scheduleShow) {
   scheduleShow.classList.add("h-full", "justify-center");
 
   const message = createModuleMessageCard(
-    "Aktivitetsskemaet vender tilbage igen kl. 8:00 i morgen",
+    getServiceClosedMessage("Aktivitetsskemaet"),
+  );
+  set(message, scheduleShow);
+}
+
+function renderActivitiesErrorState(scheduleShow) {
+  scheduleShow.innerHTML = "";
+  scheduleShow.classList.remove("gap-6");
+  scheduleShow.classList.add("h-full", "justify-center");
+
+  const message = createModuleMessageCard(
+    "Aktivitetsskemaet kan ikke tilgås lige nu",
   );
   set(message, scheduleShow);
 }

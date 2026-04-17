@@ -1,6 +1,11 @@
 import { create } from "../utils/create.js";
 import { fetchMenu } from "../data/MenuAPI.js";
 import { createModuleMessageCard } from "../utils/moduleMessageCard.js";
+import {
+  canUseServiceNow,
+  getNextServiceOpenDate,
+  getServiceClosedMessage,
+} from "../utils/serviceHours.js";
 
 const DAYS = [
   { key: "mandag", label: "MANDAG", dayCount: 1 },
@@ -10,10 +15,13 @@ const DAYS = [
   { key: "fredag", label: "FREDAG", dayCount: 5 },
 ];
 
+const OPEN_HOURS_RETRY_MS = 5 * 60 * 1000;
+
 export async function MenuModule() {
   const section = create("section", "menu-module module");
   let isMenuClosed = false;
   let refreshTimeoutId = null;
+  let cutoffIntervalId = null;
 
   const menuShow = create(
     "div",
@@ -70,6 +78,11 @@ export async function MenuModule() {
     });
   }
 
+  function showMenuLayout() {
+    section.innerHTML = "";
+    section.append(heading, menuShow);
+  }
+
   async function updateMenu() {
     const now = new Date();
 
@@ -80,6 +93,8 @@ export async function MenuModule() {
       }
       return;
     }
+
+    showMenuLayout();
 
     const data = await fetchMenu();
     heading.textContent = `MENU - UGE ${data.Week}`;
@@ -98,17 +113,20 @@ export async function MenuModule() {
     highlightToday();
   }
 
+  let initialLoadFailed = false;
+
   try {
     await updateMenu();
   } catch (err) {
+    initialLoadFailed = true;
     console.error("Failed to fetch canteen menu:", err);
     showMenuErrorState(section, err);
   }
 
-  scheduleNextMenuRefresh();
+  scheduleNextMenuRefresh(initialLoadFailed ? OPEN_HOURS_RETRY_MS : undefined);
 
-  // Check cutoff continuously so the module switches at 18:00 and reopens at the next weekday 08:00
-  setInterval(() => {
+  // Check cutoff continuously so the module switches after 18:00 and reopens at the next weekday 08:00.
+  cutoffIntervalId = setInterval(() => {
     const shouldBeOpen = isMenuOpenNow();
 
     if (!shouldBeOpen && !isMenuClosed) {
@@ -121,22 +139,36 @@ export async function MenuModule() {
       updateMenu().catch((err) => {
         console.error("Failed to fetch menu on reopen:", err);
         showMenuErrorState(section, err);
+        scheduleNextMenuRefresh(OPEN_HOURS_RETRY_MS);
       });
       scheduleNextMenuRefresh();
     }
   }, 60 * 1000);
 
+  section.destroyModule = () => {
+    if (cutoffIntervalId) {
+      clearInterval(cutoffIntervalId);
+    }
+    if (refreshTimeoutId) {
+      clearTimeout(refreshTimeoutId);
+    }
+  };
+
   return section;
 
-  function scheduleNextMenuRefresh() {
+  function scheduleNextMenuRefresh(delayMs) {
     if (refreshTimeoutId) {
       clearTimeout(refreshTimeoutId);
     }
 
     const now = new Date();
-    const nextRefresh = getNextMenuOpenDate(now);
+    const nextRefresh = delayMs
+      ? new Date(now.getTime() + delayMs)
+      : getNextMenuOpenDate(now);
 
     refreshTimeoutId = setTimeout(async () => {
+      let shouldScheduleNextOpenRefresh = true;
+
       try {
         if (isMenuClosed) {
           isMenuClosed = false;
@@ -145,51 +177,30 @@ export async function MenuModule() {
       } catch (err) {
         console.error("Failed to fetch canteen menu:", err);
         showMenuErrorState(section, err);
+        const retryDelay = isMenuOpenNow() ? OPEN_HOURS_RETRY_MS : undefined;
+        shouldScheduleNextOpenRefresh = false;
+        scheduleNextMenuRefresh(retryDelay);
+        return;
       } finally {
-        scheduleNextMenuRefresh();
+        if (shouldScheduleNextOpenRefresh) {
+          scheduleNextMenuRefresh();
+        }
       }
     }, nextRefresh - now);
   }
 }
 
 function getNextMenuOpenDate(now = new Date()) {
-  const nextOpen = new Date(now);
-  nextOpen.setHours(8, 0, 0, 0);
-
-  if (now < nextOpen && now.getDay() >= 1 && now.getDay() <= 5) {
-    return nextOpen;
-  }
-
-  do {
-    nextOpen.setDate(nextOpen.getDate() + 1);
-  } while (nextOpen.getDay() === 0 || nextOpen.getDay() === 6);
-
-  return nextOpen;
+  return getNextServiceOpenDate(now);
 }
 
 function isMenuOpenNow(now = new Date()) {
   const dayOfWeek = now.getDay();
-  const hour = now.getHours();
-
-  return dayOfWeek >= 1 && dayOfWeek <= 5 && hour >= 8 && hour < 18;
+  return dayOfWeek >= 1 && dayOfWeek <= 5 && canUseServiceNow(now);
 }
 
 function getClosedMenuMessage(now = new Date()) {
-  const nextOpen = getNextMenuOpenDate(now);
-
-  if (
-    nextOpen.getDate() === now.getDate() &&
-    nextOpen.getMonth() === now.getMonth() &&
-    nextOpen.getFullYear() === now.getFullYear()
-  ) {
-    return "Kantinenmenuen åbner igen kl. 8:00 i dag";
-  }
-
-  if (nextOpen.getDay() === 1) {
-    return "Kantinenmenuen vender tilbage igen kl. 8:00 på mandag";
-  }
-
-  return "Kantinenmenuen vender tilbage igen kl. 8:00 i morgen";
+  return getServiceClosedMessage("Kantinenmenuen", now);
 }
 
 function showMenuClosedState(section, now = new Date()) {
