@@ -4,7 +4,7 @@ import { createModuleMessageCard } from "../utils/moduleMessageCard.js";
 import { set } from "../utils/set.js";
 import {
   canUseServiceNow,
-  isAfterServiceHours,
+  getServiceClosedMessage,
 } from "../utils/serviceHours.js";
 
 // ---------- CONFIG ----------
@@ -23,6 +23,12 @@ const MIN_VISIBLE_TIME_MS = 0;
 const RED_TIME_MS = 3 * 60 * 1000;
 const ORANGE_TIME_MS = 4 * 60 * 1000;
 const YELLOW_TIME_MS = 5 * 60 * 1000;
+const COUNTDOWN_TEXT_CLASSES = [
+  "text-accent-yellow",
+  "text-primary-red",
+  "text-orange",
+  "text-yellow",
+];
 
 // how often countdown should visually update
 // every 1 second
@@ -174,7 +180,9 @@ async function getRejseplanenData() {
 // ---------- TIME RULES ----------
 
 function canFetchNow() {
-  return canUseServiceNow();
+  const now = new Date();
+  const isWeekday = now.getDay() >= 1 && now.getDay() <= 5;
+  return isWeekday && canUseServiceNow(now);
 }
 
 function getCurrentHalfHourSlot() {
@@ -218,16 +226,51 @@ function normalizeDepartures(data) {
 function startBusRendering(data, leftList, rightList, listContainer) {
   // keep current departures in memory
   let departures = normalizeDepartures(data);
+  let renderedDepartures = [];
+  let countdownRows = [];
 
-  function render() {
-    // if there is no data, show fallback message
-    if (!departures.length) {
+  function renderFullBusList() {
+    renderedDepartures = departures
+      .filter((dep) => !isDepartureExpired(dep))
+      .sort((a, b) => getDepartureDate(a) - getDepartureDate(b))
+      .slice(0, 7);
+
+    if (!renderedDepartures.length) {
+      countdownRows = [];
       renderNoBusesMessage(leftList, rightList, listContainer);
       return;
     }
 
-    // otherwise render buses
-    renderBusTimes(departures, leftList, rightList, listContainer);
+    countdownRows = renderBusTimes(
+      renderedDepartures,
+      leftList,
+      rightList,
+      listContainer,
+    );
+  }
+
+  function render() {
+    if (!countdownRows.length) {
+      return;
+    }
+
+    let shouldRerender = false;
+
+    countdownRows.forEach(({ dep, element }) => {
+      const remainingMs = getRemainingTimeMs(dep);
+
+      if (remainingMs === null || remainingMs <= MIN_VISIBLE_TIME_MS) {
+        shouldRerender = true;
+        return;
+      }
+
+      element.textContent = getRemainingTimeLabel(dep);
+      applyCountdownTextClass(element, getCountdownTextClass(remainingMs));
+    });
+
+    if (shouldRerender) {
+      renderFullBusList();
+    }
   }
 
   async function refreshData() {
@@ -239,14 +282,14 @@ function startBusRendering(data, leftList, rightList, listContainer) {
       departures = normalizeDepartures(freshData);
 
       // re-render immediately after refresh
-      render();
+      renderFullBusList();
     } catch (error) {
       console.warn("Could not refresh bus data", error);
     }
   }
 
   // first immediate render
-  render();
+  renderFullBusList();
 
   // update countdown every second
   const renderIntervalId = setInterval(render, RENDER_INTERVAL);
@@ -267,6 +310,7 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
   // clear old content before drawing fresh UI
   leftList.innerHTML = "";
   rightList.innerHTML = "";
+  const countdownRows = [];
 
   // restore normal list sizing/gap when buses are available
   leftList.classList.remove("h-full");
@@ -281,19 +325,6 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
   listContainer.classList.remove("grid-cols-1");
   listContainer.classList.add("grid-cols-[1fr_auto]");
 
-  // keep only buses with enough remaining time,
-  // then sort by closest departure and take the first 7
-  const visibleDepartures = departures
-    .filter((dep) => !isDepartureExpired(dep))
-    .sort((a, b) => getDepartureDate(a) - getDepartureDate(b))
-    .slice(0, 7);
-
-  // if nothing left after filtering, show fallback message
-  if (!visibleDepartures.length) {
-    renderNoBusesMessage(leftList, rightList, listContainer);
-    return;
-  }
-
   // colors for specific known bus lines
   const busColors = {
     17: ["bg-light-blue", "bg-dark-blue"],
@@ -302,7 +333,7 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
     6: ["bg-light-green", "bg-dark-green"],
   };
 
-  visibleDepartures.forEach((dep) => {
+  departures.forEach((dep) => {
     // safe fallbacks if fields are missing
     const name = dep.name || "Bus";
     const direction = dep.direction || "No direction";
@@ -362,7 +393,10 @@ function renderBusTimes(departures, leftList, rightList, listContainer) {
 
     // add right row to right column
     set(rightItem, rightList);
+    countdownRows.push({ dep, element: rightItem });
   });
+
+  return countdownRows;
 }
 
 // ---------- EMPTY STATE ----------
@@ -386,9 +420,12 @@ function renderNoBusesMessage(leftList, rightList, listContainer) {
   leftList.classList.add("h-full");
 
   // create message item
-  const messageText = isAfterServiceHours()
-    ? "Busplanen vender tilbage igen kl. 8:00 i morgen"
-    : "Busplanen kan ikke tilgås lige nu";
+  const now = new Date();
+  const isWeekday = now.getDay() >= 1 && now.getDay() <= 5;
+  const isServiceClosed = !isWeekday || !canUseServiceNow(now);
+  const messageText = isServiceClosed
+    ? getServiceClosedMessage("Busplanen", now)
+    : "Ingen afgange lige nu";
   const messageItem = createModuleMessageCard(messageText, "li");
 
   // show message in left column
@@ -460,6 +497,11 @@ function getCountdownTextClass(remainingMs) {
   }
 
   return "text-accent-yellow";
+}
+
+function applyCountdownTextClass(element, className) {
+  element.classList.remove(...COUNTDOWN_TEXT_CLASSES);
+  element.classList.add(className);
 }
 
 // ---------- HELPER: EXTRACT BUS NUMBER ----------

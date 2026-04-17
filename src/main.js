@@ -3,6 +3,7 @@ import "./style.css";
 import { get } from "./utils/get.js";
 import { create } from "./utils/create.js";
 import { set } from "./utils/set.js";
+import { createModuleMessageCard } from "./utils/moduleMessageCard.js";
 import { BackgroundGradient } from "./BackgroundGradient.js";
 
 import { ActivitiesModule } from "./modules/Activities.js";
@@ -17,7 +18,8 @@ import logoSrc from "./assets/images/logo.svg";
 BackgroundGradient();
 
 const app = get("#app");
-set(superTim(), app);
+const superTimElement = superTim();
+set(superTimElement, app);
 
 const h1 = create("h1", "w-2/9");
 
@@ -48,35 +50,57 @@ set(
   grid,
 );
 
-async function mountModule(moduleFactory, container, moduleName) {
+function destroyElementModule(element) {
+  if (typeof element?.destroyModule === "function") {
+    element.destroyModule();
+  }
+}
+
+async function mountModule(moduleFactory, container, moduleDisplayName) {
   try {
+    [...container.children].forEach(destroyElementModule);
+    container.innerHTML = "";
+
     const moduleElement = await moduleFactory();
     set(moduleElement, container);
   } catch (error) {
-    console.error(`Failed to render ${moduleName}:`, error);
+    console.error(`Failed to render ${moduleDisplayName}:`, error);
+    container.innerHTML = "";
+
+    const fallbackSection = create("section", "module");
+    const fallbackHeading = create("h2");
+    fallbackHeading.textContent = moduleDisplayName;
+
+    const fallbackCard = createModuleMessageCard(
+      "Modulet er midlertidigt utilgængeligt",
+    );
+
+    set([fallbackHeading, fallbackCard], fallbackSection);
+    set(fallbackSection, container);
   }
 }
+
+function destroyMountedModules() {
+  Object.values(modulePlaceholders).forEach((container) => {
+    [...container.children].forEach(destroyElementModule);
+  });
+  destroyElementModule(superTimElement);
+}
+
+window.addEventListener("pagehide", (event) => {
+  if (!event.persisted) {
+    destroyMountedModules();
+  }
+});
 
 (async () => {
   // Load all modules in parallel with individual error handling
   await Promise.allSettled([
-    mountModule(
-      ActivitiesModule,
-      modulePlaceholders.activities,
-      "Activities module",
-    ),
-    mountModule(MenuModule, modulePlaceholders.menu, "Menu module"),
-    mountModule(
-      RejseplanenModule,
-      modulePlaceholders.rejseplanen,
-      "Rejseplanen module",
-    ),
-    mountModule(
-      WeatherClockModule,
-      modulePlaceholders.weather,
-      "Weather and clock module",
-    ),
-    mountModule(DRNewsModule, modulePlaceholders.drNews, "DR News module"),
+    mountModule(ActivitiesModule, modulePlaceholders.activities, "SKEMA"),
+    mountModule(MenuModule, modulePlaceholders.menu, "UGENS MENU"),
+    mountModule(RejseplanenModule, modulePlaceholders.rejseplanen, "BUSTIDER"),
+    mountModule(WeatherClockModule, modulePlaceholders.weather, "VEJR OG TID"),
+    mountModule(DRNewsModule, modulePlaceholders.drNews, "DR NYHEDER"),
   ]);
 
   // DISABLE POPUP UNTIL NEW CONTENT IS READY (see also import at top)
