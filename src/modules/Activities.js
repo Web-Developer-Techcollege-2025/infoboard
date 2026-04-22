@@ -1,4 +1,4 @@
-import { getActivities } from "../data/ActivitiesAPI.js";
+import { getCachedActivities } from "../data/timers/ActivitiesScheduler.js";
 import { create } from "../utils/create.js";
 import { createModuleMessageCard } from "../utils/moduleMessageCard.js";
 import {
@@ -38,7 +38,7 @@ export async function ActivitiesModule() {
         scheduleShow.classList.remove("h-full", "justify-center");
         scheduleShow.classList.add("gap-6");
 
-        const activities = await getActivities();
+        const activities = await getCachedActivities();
         scheduleShow.innerHTML = "";
 
         activities.slice(0, 7).forEach((activity, index) => {
@@ -114,6 +114,8 @@ export async function ActivitiesModule() {
 
 function formatTime(dateString) {
   const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "--:--";
+
   return date.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
