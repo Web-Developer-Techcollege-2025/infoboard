@@ -1,4 +1,4 @@
-import { fetchWeather } from "../data/WeatherAPI";
+import { getCachedWeather } from "../data/timers/WeatherScheduler.js";
 
 import { time } from "../components/Time";
 import { dateClock } from "../components/Date";
@@ -42,7 +42,7 @@ export function WeatherClockModule() {
     weatherContainer.innerHTML = "";
 
     try {
-      const data = await fetchWeather();
+      const data = await getCachedWeather();
       const temp = create(
         "p",
         "weather-temp p-3 text-center text-4xl font-bold tracking-wider text-accent-yellow",

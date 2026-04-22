@@ -1,28 +1,38 @@
-// Schedules fetching of DR News data, with caching in localStorage for 24 hours to reduce API calls
+// Schedules fetching of DR News data, with caching in localStorage for 1 hour
 import { fetchDRNews } from "../DRNewsAPI.js";
+import {
+  isFreshTimestamp,
+  readStorageJSON,
+  writeStorageJSON,
+} from "../../utils/cache.js";
 
-const ONE_DAY = 24 * 60 * 60 * 1000;
+const CACHE_TTL_MS = 60 * 60 * 1000;
 
-// Keys for storing the cached items and timestamp in localStorage
-const STORAGE_KEY_ITEMS = "drNewsItems";
-const STORAGE_KEY_TIMESTAMP = "drNewsFetched";
+const STORAGE_KEY = "drNewsCache";
 
 export async function getCachedDRNews() {
-  const lastFetch = localStorage.getItem(STORAGE_KEY_TIMESTAMP);
-  const cachedItems = localStorage.getItem(STORAGE_KEY_ITEMS);
+  const cached = readStorageJSON(STORAGE_KEY, (error) => {
+    console.warn("Invalid DR news cache. Refreshing cache.", error);
+    localStorage.removeItem(STORAGE_KEY);
+  });
 
+  const cachedItems = Array.isArray(cached?.items) ? cached.items : null;
   const cacheIsValid =
-    lastFetch && cachedItems && Date.now() - Number(lastFetch) < ONE_DAY;
+    cachedItems && isFreshTimestamp(cached?.timestamp, CACHE_TTL_MS);
 
   // Return cached items if cache is still valid
   if (cacheIsValid) {
-    return JSON.parse(cachedItems);
+    return cachedItems;
   }
 
   // Cache expired or missing — fetch fresh data and update localStorage
   const data = await fetchDRNews();
-  localStorage.setItem(STORAGE_KEY_ITEMS, JSON.stringify(data.items));
-  localStorage.setItem(STORAGE_KEY_TIMESTAMP, Date.now().toString());
+  const items = Array.isArray(data?.items) ? data.items : [];
 
-  return data.items;
+  writeStorageJSON(STORAGE_KEY, {
+    items,
+    timestamp: Date.now(),
+  });
+
+  return items;
 }

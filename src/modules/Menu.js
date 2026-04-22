@@ -1,5 +1,5 @@
 import { create } from "../utils/create.js";
-import { fetchMenu } from "../data/MenuAPI.js";
+import { getCachedMenu } from "../data/timers/MenuScheduler.js";
 import { createModuleMessageCard } from "../utils/moduleMessageCard.js";
 import {
   canUseServiceNow,
@@ -96,7 +96,7 @@ export async function MenuModule() {
 
     showMenuLayout();
 
-    const data = await fetchMenu();
+    const data = await getCachedMenu();
     heading.textContent = `MENU - UGE ${data.Week}`;
     if (!data.Days || !Array.isArray(data.Days)) return;
     data.Days.forEach(({ DayName, Dish }) => {
@@ -119,7 +119,9 @@ export async function MenuModule() {
     await updateMenu();
   } catch (err) {
     initialLoadFailed = true;
-    console.error("Failed to fetch canteen menu:", err);
+    if (!isMenuAccessError(err)) {
+      console.error("Failed to fetch canteen menu:", err);
+    }
     showMenuErrorState(section, err);
   }
 
@@ -175,7 +177,9 @@ export async function MenuModule() {
         }
         await updateMenu();
       } catch (err) {
-        console.error("Failed to fetch canteen menu:", err);
+        if (!isMenuAccessError(err)) {
+          console.error("Failed to fetch canteen menu:", err);
+        }
         showMenuErrorState(section, err);
         const retryDelay = isMenuOpenNow() ? OPEN_HOURS_RETRY_MS : undefined;
         shouldScheduleNextOpenRefresh = false;
@@ -219,11 +223,21 @@ function showMenuErrorState(section, error) {
   const heading = create("h2");
   heading.textContent = "UGENS MENU";
 
-  const errorText =
-    error?.status === 403
-      ? "Kantinens menu kan kun tilgås på Techcollege's netværk"
-      : "Kantinens menu kan ikke tilgås lige nu";
+  const isNetworkRestrictedError = isMenuAccessError(error);
+
+  const errorText = isNetworkRestrictedError
+    ? "Kantinens menu kan kun tilgås på Techcollege's netværk"
+    : "Kantinens menu kan ikke tilgås lige nu";
 
   const errorContainer = createModuleMessageCard(errorText);
   section.append(heading, errorContainer);
+}
+
+function isMenuAccessError(error) {
+  return (
+    error?.status === 403 ||
+    error?.name === "TypeError" ||
+    error?.message === "Failed to fetch" ||
+    error?.message?.includes("fetch")
+  );
 }
