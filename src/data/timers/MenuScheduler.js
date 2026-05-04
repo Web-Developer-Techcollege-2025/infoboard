@@ -17,15 +17,20 @@ export async function getCachedMenu() {
   });
 
   if (parsedCache?.data) {
-    const sameWeek = parsedCache.weekKey === getISOWeekKey(now);
+    const currentWeekKey = getISOWeekKey(now);
+    const sameWeek = parsedCache.weekKey === currentWeekKey;
     const fresh = isFreshTimestamp(
       parsedCache.timestamp,
       CACHE_TTL_MS,
       now.getTime(),
     );
 
+    // If week has changed, force refresh even if cache is fresh
     if (sameWeek && fresh) {
       return parsedCache.data;
+    } else if (!sameWeek) {
+      // Week changed: clear cache to avoid stale menu
+      localStorage.removeItem(STORAGE_KEY);
     }
   }
 
